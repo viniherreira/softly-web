@@ -12,17 +12,17 @@ export const mdxComponents: MDXComponents = {
   ),
   h3: ({ children }) => <h3 className="mt-10 text-display-sm text-title">{children}</h3>,
   p: ({ children }) => <p className="mt-5 text-body text-body">{children}</p>,
-  ul: ({ children }) => <ul className="mt-5 space-y-3">{children}</ul>,
-  ol: ({ children }) => <ol className="mt-5 list-decimal space-y-3 pl-5">{children}</ol>,
-  li: ({ children }) => (
-    <li className="relative pl-6 text-body text-body marker:text-brand-soft [ol>&]:pl-0">
-      <span
-        aria-hidden="true"
-        className="absolute left-0 top-3 h-1.5 w-1.5 rounded-pill bg-brand-soft [ol>&]:hidden"
-      />
-      {children}
-    </li>
+  // Marcadores vêm do próprio list-style (com a variante `marker:`) — assim
+  // ul e ol se comportam certo sem gambiarra de pseudo-elemento posicionado.
+  ul: ({ children }) => (
+    <ul className="mt-5 list-disc space-y-3 pl-5 marker:text-brand-soft">{children}</ul>
   ),
+  ol: ({ children }) => (
+    <ol className="mt-5 list-decimal space-y-3 pl-5 marker:font-mono marker:text-brand-soft">
+      {children}
+    </ol>
+  ),
+  li: ({ children }) => <li className="pl-1.5 text-body text-body">{children}</li>,
   strong: ({ children }) => <strong className="font-bold text-title">{children}</strong>,
   em: ({ children }) => <em className="text-brand-soft">{children}</em>,
   a: ({ href, children }) => {
