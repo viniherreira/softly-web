@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
 import { ArrowRight } from '@/components/icons/ui-icons';
 import { JsonLd } from '@/components/json-ld';
 import { Reveal } from '@/components/motion/reveal';
@@ -111,7 +112,12 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       <div className="shell">
         <div className="divider-glow" />
         <div className="mx-auto mt-12 max-w-prose">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          <MDXRemote
+            source={post.content}
+            components={mdxComponents}
+            // remark-gfm habilita tabela, task list e autolink no MDX
+            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          />
         </div>
 
         <div className="mx-auto mt-16 max-w-prose">
