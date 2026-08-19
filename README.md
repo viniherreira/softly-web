@@ -46,6 +46,10 @@ npm run fonts:sync # recopia os .woff2 do node_modules para app/fonts
 Os arquivos de fonte já estão versionados em `app/fonts`, então **o build não
 depende de rede**. Só rode `fonts:sync` se trocar as famílias.
 
+`sharp` entra como dependência opcional — é o que otimiza as imagens em
+produção. Na Vercel ela já vem no ambiente; em self-hosting, o `npm install`
+resolve. Sem ela o site roda igual, só sem otimizar bitmap.
+
 ---
 
 ## 2. Estrutura de pastas

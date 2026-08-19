@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Project } from '@/content/projects';
 import { cn } from '@/lib/utils';
 
@@ -19,6 +20,29 @@ export function ProjectFrame({
   className?: string;
 }) {
   const { device } = project;
+
+  // Captura real disponível: entra otimizada (AVIF/WebP, dimensões fixas,
+  // blur enquanto carrega) e o mockup vetorial sai de cena.
+  if (project.image) {
+    return (
+      <div
+        className={cn(
+          'relative aspect-[16/10] w-full overflow-hidden rounded-[18px] border border-line/70 bg-ink-800',
+          className,
+        )}
+      >
+        <Image
+          src={project.image}
+          alt={`Interface do projeto ${project.client} — ${project.category}`}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 720px"
+          className="object-cover"
+          quality={82}
+        />
+        <div className="noise-layer" />
+      </div>
+    );
+  }
 
   return (
     <div
