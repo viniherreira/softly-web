@@ -1,0 +1,46 @@
+---
+title: "Core Web Vitals explicado para quem não é técnico"
+description: "Três números decidem se o Google mostra o seu site e se o visitante espera carregar. Dá para entender sem saber programar."
+date: "2025-12-05"
+readingTime: 5
+category: "Performance"
+author: "Vinícius Herreira"
+featured: false
+---
+
+Se alguém já te mandou um relatório com "LCP", "CLS" e "INP" em vermelho, aqui vai a tradução — e o que fazer com cada um.
+
+## LCP — quanto demora para aparecer o que importa
+
+**Largest Contentful Paint** mede em quanto tempo o maior elemento visível (normalmente a imagem ou o título do topo) termina de carregar.
+
+- Bom: abaixo de 2,5 segundos.
+- Ruim: acima de 4 segundos.
+
+Culpados frequentes: imagem gigante sem compressão, fonte que bloqueia a renderização, e servidor lento. Comprimir a imagem principal costuma resolver metade do problema em uma tarde.
+
+## CLS — quanto a página "pula" enquanto carrega
+
+**Cumulative Layout Shift** mede o deslocamento inesperado do conteúdo. É aquele momento em que você vai clicar num botão, um banner carrega acima e você clica em outra coisa.
+
+- Bom: abaixo de 0,1.
+
+A correção quase sempre é reservar espaço: declarar largura e altura de imagem, e nunca injetar banner acima de conteúdo já renderizado.
+
+## INP — quanto demora para o site responder ao seu clique
+
+**Interaction to Next Paint** substituiu o antigo FID. Mede o tempo entre o seu clique e a resposta visível da página.
+
+- Bom: abaixo de 200 milissegundos.
+
+Causa comum: excesso de script de terceiro (chat, pixel, mapa, teste A/B) disputando a mesma linha de execução. Cada ferramenta que você instala no site cobra esse pedágio.
+
+## Por que isso importa para o seu bolso
+
+Os três são fator de ranqueamento no Google desde 2021, mas o efeito direto é mais simples: página lenta perde visitante antes de qualquer coisa. Em e-commerce, a correlação entre 1 segundo a mais e queda de conversão está documentada há uma década.
+
+## Como medir hoje, de graça
+
+1. Abra o [PageSpeed Insights](https://pagespeed.web.dev) e cole o endereço do seu site.
+2. Olhe **apenas** a aba de celular — é de onde vem a maior parte do seu tráfego.
+3. Anote os três números. Se estiverem verdes, ótimo, o problema é outro. Se estiverem vermelhos, você acabou de achar dinheiro no chão.
