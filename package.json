@@ -31,6 +31,9 @@
     "tailwind-merge": "^2.6.0",
     "zod": "^3.24.1"
   },
+  "optionalDependencies": {
+    "sharp": "^0.33.5"
+  },
   "devDependencies": {
     "@fontsource/jetbrains-mono": "^5.1.1",
     "@fontsource/manrope": "^5.1.0",
