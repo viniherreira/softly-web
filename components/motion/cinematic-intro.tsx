@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-media-query';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { useSmoothScroll } from '@/components/motion/smooth-scroll';
+import { LogoMark } from '@/components/icons/logo';
 import {
   ParticleField,
   SpatialGrid,
@@ -95,22 +96,37 @@ export function CinematicIntro() {
   const { stop, start } = useSmoothScroll();
   const [active, setActive] = useState(false);
   const [gone, setGone] = useState(false);
+  /** Abertura enxuta para quem pediu menos movimento: só opacidade. */
+  const [reducedIntro, setReducedIntro] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  /* Decide se a intro roda — antes de qualquer trabalho pesado. */
+  /* Decide se a intro roda — antes de qualquer trabalho pesado.
+     Lê a preferência direto do matchMedia em vez do hook: durante a
+     hidratação o hook ainda devolve o snapshot do servidor (false), e a
+     decisão sairia errada justamente para quem pediu menos movimento. */
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (reduced) {
-      window.sessionStorage.setItem(SESSION_KEY, '1');
+
+    const seen = Boolean(window.sessionStorage.getItem(SESSION_KEY));
+    if (seen) {
       setGone(true);
       return;
     }
-    if (window.sessionStorage.getItem(SESSION_KEY)) {
-      setGone(true);
-      return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.sessionStorage.setItem(SESSION_KEY, '1');
+
+    if (prefersReduced) {
+      // Sem partículas e sem deslocamento: a marca entra e sai só com
+      // opacidade, e o scroll nunca é travado.
+      setReducedIntro(true);
+      const timer = window.setTimeout(() => setReducedIntro(false), 900);
+      return () => window.clearTimeout(timer);
     }
+
     setActive(true);
-  }, [reduced]);
+    return;
+  }, []);
 
   useEffect(() => {
     if (!active) return;
@@ -545,6 +561,18 @@ export function CinematicIntro() {
       start();
     };
   }, [active, isMobile, stop, start]);
+
+  if (reducedIntro) {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-[200] grid place-items-center bg-ink-900 motion-safe:transition-opacity"
+        style={{ animation: 'softly-reduced-intro 900ms ease-in-out forwards' }}
+      >
+        <LogoMark className="h-20 w-20" />
+      </div>
+    );
+  }
 
   if (gone || !active) return null;
 
