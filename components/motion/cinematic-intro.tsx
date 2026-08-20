@@ -99,6 +99,10 @@ export function CinematicIntro() {
   /** Abertura enxuta para quem pediu menos movimento: só opacidade. */
   const [reducedIntro, setReducedIntro] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  /** Trava a decisão em uma única execução: em desenvolvimento o StrictMode
+   *  monta o efeito duas vezes, e a segunda passada encontrava a sessão já
+   *  marcada pela primeira — a intro nunca chegava a aparecer. */
+  const decidedRef = useRef(false);
 
   /* Decide se a intro roda — antes de qualquer trabalho pesado.
      Lê a preferência direto do matchMedia em vez do hook: durante a
@@ -106,6 +110,8 @@ export function CinematicIntro() {
      decisão sairia errada justamente para quem pediu menos movimento. */
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (decidedRef.current) return;
+    decidedRef.current = true;
 
     const seen = Boolean(window.sessionStorage.getItem(SESSION_KEY));
     if (seen) {
