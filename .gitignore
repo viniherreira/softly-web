@@ -23,3 +23,6 @@ yarn-error.log*
 # env
 .env
 .env*.local
+
+# saída de scripts de captura
+/undefined

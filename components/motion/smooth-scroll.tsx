@@ -1,7 +1,7 @@
 'use client';
 
 import Lenis from 'lenis';
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 
 type ScrollApi = {
@@ -12,11 +12,15 @@ type ScrollApi = {
 
 const ScrollContext = createContext<ScrollApi | null>(null);
 
-/** API de scroll do site — cai para window.scrollTo quando Lenis está desligado. */
+/**
+ * API de scroll do site — cai para window.scrollTo quando Lenis está desligado.
+ * O fallback é memoizado: sem isso ele virava um objeto novo a cada render, e
+ * qualquer efeito que dependesse de `stop`/`start` remontava junto.
+ */
 export function useSmoothScroll(): ScrollApi {
   const context = useContext(ScrollContext);
-  return (
-    context ?? {
+  const fallback = useMemo<ScrollApi>(
+    () => ({
       scrollTo: (target, options) => {
         if (typeof window === 'undefined') return;
         const offset = options?.offset ?? 0;
@@ -31,8 +35,11 @@ export function useSmoothScroll(): ScrollApi {
       },
       stop: () => {},
       start: () => {},
-    }
+    }),
+    [],
   );
+
+  return context ?? fallback;
 }
 
 /**

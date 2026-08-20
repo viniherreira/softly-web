@@ -334,6 +334,14 @@
   }
 }
 
+/* Abertura reduzida: existe para quem pediu menos movimento continuar vendo a
+   marca, sem nenhum deslocamento — só opacidade. */
+@keyframes softly-reduced-intro {
+  0% { opacity: 1; }
+  62% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    ACESSIBILIDADE DE MOVIMENTO
    Corta preloader, parallax, scrub, cursor e revelação por caractere.
@@ -350,6 +358,12 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.15s !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Exceção: a abertura reduzida é pura opacidade e precisa do seu tempo
+     para não virar um flash de 150ms na cara de quem abriu o site. */
+  [style*='softly-reduced-intro'] {
+    animation-duration: 900ms !important;
   }
   .animate-marquee,
   .animate-mesh-drift,
