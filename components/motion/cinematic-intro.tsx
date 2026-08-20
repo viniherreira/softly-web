@@ -113,8 +113,19 @@ export function CinematicIntro() {
     if (decidedRef.current) return;
     decidedRef.current = true;
 
+    /* Atalhos de teste, porque a intro roda uma vez por sessão e isso torna
+       difícil revê-la durante o desenvolvimento:
+         ?intro=1  força a intro, mesmo já vista nesta sessão
+         ?intro=0  pula a intro                                            */
+    const forced = new URLSearchParams(window.location.search).get('intro');
+    if (forced === '0') {
+      window.sessionStorage.setItem(SESSION_KEY, '1');
+      setGone(true);
+      return;
+    }
+
     const seen = Boolean(window.sessionStorage.getItem(SESSION_KEY));
-    if (seen) {
+    if (seen && forced !== '1') {
       setGone(true);
       return;
     }
