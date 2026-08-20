@@ -8,7 +8,7 @@ import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { CustomCursor } from '@/components/motion/custom-cursor';
 import { PageTransition } from '@/components/motion/page-transition';
-import { Preloader } from '@/components/motion/preloader';
+import { CinematicIntro } from '@/components/motion/cinematic-intro';
 import { ScrollProgressBar } from '@/components/motion/scroll-progress';
 import { SmoothScrollProvider } from '@/components/motion/smooth-scroll';
 import { ThemeProvider, themeInitScript } from '@/components/theme-provider';
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider>
           <SmoothScrollProvider>
             <EstimateProvider>
-              <Preloader />
+              <CinematicIntro />
               <ScrollProgressBar />
               <CustomCursor />
 

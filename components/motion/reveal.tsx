@@ -1,6 +1,12 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
+
+/** motion() foi depreciado em favor de motion.create(); mantém compatível
+ *  com as duas APIs sem poluir o console. */
+const motionTag = (tag: ElementType) =>
+  (motion as unknown as { create?: (t: ElementType) => ElementType }).create?.(tag) ??
+  (motion as unknown as (t: ElementType) => ElementType)(tag);
 import type { ElementType, ReactNode } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { EASE_EXPO, DURATION, STAGGER, reducedVariants, viewportOnce } from '@/lib/motion';
@@ -28,7 +34,7 @@ export function Reveal({
   amount?: number;
 }) {
   const reduced = usePrefersReducedMotion();
-  const MotionTag = motion(as as ElementType);
+  const MotionTag = motionTag(as);
 
   const variants: Variants = reduced
     ? reducedVariants
@@ -73,7 +79,7 @@ export function RevealGroup({
   as?: ElementType;
   amount?: number;
 }) {
-  const MotionTag = motion(as as ElementType);
+  const MotionTag = motionTag(as);
 
   return (
     <MotionTag
@@ -103,7 +109,7 @@ export function RevealItem({
   as?: ElementType;
 }) {
   const reduced = usePrefersReducedMotion();
-  const MotionTag = motion(as as ElementType);
+  const MotionTag = motionTag(as);
 
   const variants: Variants = reduced
     ? reducedVariants
