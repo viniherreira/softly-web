@@ -5,9 +5,10 @@ import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 
 /**
  * Quanto o hero deve esperar antes de entrar.
- * No primeiro load da sessão o preloader ocupa ~1,5s — a entrada orquestrada
- * começa logo depois da cortina, não por baixo dela. Em navegação interna
- * (ou com reduced-motion) o atraso é zero.
+ * No primeiro load da sessão a intro cinematográfica ocupa ~3,95s — a entrada
+ * orquestrada começa junto com a cortina, para o hero já estar em movimento
+ * quando o site é revelado. Em navegação interna (ou com reduced-motion) o
+ * atraso é zero.
  */
 export function useEntranceDelay(): number {
   const reduced = usePrefersReducedMotion();
@@ -21,7 +22,7 @@ export function useEntranceDelay(): number {
       return;
     }
     const alreadyLoaded = window.sessionStorage.getItem('softly:preloaded');
-    setDelay(alreadyLoaded ? 0 : 1.35);
+    setDelay(alreadyLoaded ? 0 : 3.8);
     setReady(true);
   }, [reduced]);
 
