@@ -18,7 +18,7 @@ import { baseUrl, buildMetadata } from '@/lib/seo';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(baseUrl),
+  metadataBase: new URL(baseUrl), // baseUrl já vem normalizado por lib/seo.ts
   ...buildMetadata(),
   applicationName: site.name,
   authors: [{ name: site.name, url: baseUrl }],
