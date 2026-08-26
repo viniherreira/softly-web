@@ -1,10 +1,46 @@
 import type { Metadata } from 'next';
 import { site } from '@/content/site';
 
-export const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? site.url;
+/**
+ * Normaliza um candidato a URL base.
+ * Devolve null quando não dá para aproveitar, para a busca seguir na próxima
+ * fonte em vez de estourar. Cobre os dois casos que derrubam o build:
+ *  - variável cadastrada vazia (o `??` não pega string vazia);
+ *  - domínio sem protocolo, como a Vercel entrega em VERCEL_URL.
+ */
+const normalizeBaseUrl = (value: string | undefined | null): string | null => {
+  const raw = value?.trim();
+  if (!raw) return null;
+  const candidate = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    return new URL(candidate).origin;
+  } catch {
+    return null;
+  }
+};
 
-export const absoluteUrl = (path = '/'): string =>
-  new URL(path, baseUrl).toString();
+/**
+ * URL pública do site, em ordem de preferência:
+ *   1. NEXT_PUBLIC_SITE_URL — o domínio final, quando configurado
+ *   2. domínio de produção da Vercel — para previews e primeiro deploy
+ *   3. o valor de content/site.ts
+ *   4. localhost — último recurso, para o build nunca falhar por isto
+ */
+export const baseUrl =
+  normalizeBaseUrl(process.env.NEXT_PUBLIC_SITE_URL) ??
+  normalizeBaseUrl(process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL) ??
+  normalizeBaseUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+  normalizeBaseUrl(process.env.VERCEL_URL) ??
+  normalizeBaseUrl(site.url) ??
+  'http://localhost:3000';
+
+export const absoluteUrl = (path = '/'): string => {
+  try {
+    return new URL(path, baseUrl).toString();
+  } catch {
+    return baseUrl;
+  }
+};
 
 type SeoInput = {
   title?: string;
