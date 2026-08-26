@@ -251,14 +251,20 @@ Copie `.env.example` para `.env.local`. **Nenhuma é obrigatória para rodar.**
 
 | Variável | Para quê | Obrigatória |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | canonical, OG, sitemap, robots | recomendada em produção |
+| `SITE_URL` | canonical, OG, sitemap, robots | recomendada em produção |
 
-> **Atenção ao cadastrar `NEXT_PUBLIC_SITE_URL`:** use a URL completa, com
-> `https://` (ex.: `https://softly.com.br`). Deixá-la cadastrada **vazia** ou
-> sem protocolo já derrubou build na Vercel com `TypeError: Invalid URL` em
-> `/_not-found`. Hoje `lib/seo.ts` normaliza o valor e cai para o domínio de
-> produção da Vercel — e depois para `content/site.ts` — em vez de quebrar,
-> mas o canonical só fica correto com o valor certo.
+> **Ao cadastrar `SITE_URL`:** use a URL completa, com `https://`
+> (ex.: `https://softly.com.br`). Deixá-la **vazia** ou sem protocolo já
+> derrubou build na Vercel com `TypeError: Invalid URL` em `/_not-found`.
+> Hoje `lib/seo.ts` normaliza o valor e cai para o domínio de produção da
+> Vercel — e depois para `content/site.ts` — em vez de quebrar, mas o
+> canonical só fica correto com o valor certo.
+>
+> Ela **não** leva o prefixo `NEXT_PUBLIC_`: só o servidor a lê, e o prefixo
+> serviria apenas para expor o valor ao navegador. `NEXT_PUBLIC_SITE_URL`
+> continua aceita por compatibilidade. Já `NEXT_PUBLIC_GA_ID` e
+> `NEXT_PUBLIC_META_PIXEL_ID` precisam do prefixo — são lidos pelo navegador
+> e são identificadores públicos por natureza.
 | `NEXT_PUBLIC_GA_ID` | Google Analytics 4 | não |
 | `NEXT_PUBLIC_META_PIXEL_ID` | Meta Pixel | não |
 | `CONTACT_WEBHOOK_URL` | recebe o lead em JSON | não |

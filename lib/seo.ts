@@ -21,12 +21,19 @@ const normalizeBaseUrl = (value: string | undefined | null): string | null => {
 
 /**
  * URL pública do site, em ordem de preferência:
- *   1. NEXT_PUBLIC_SITE_URL — o domínio final, quando configurado
- *   2. domínio de produção da Vercel — para previews e primeiro deploy
- *   3. o valor de content/site.ts
- *   4. localhost — último recurso, para o build nunca falhar por isto
+ *   1. SITE_URL — o domínio final (variável de servidor, sem prefixo público)
+ *   2. NEXT_PUBLIC_SITE_URL — aceita por compatibilidade com quem já cadastrou
+ *   3. domínio de produção da Vercel — para previews e primeiro deploy
+ *   4. o valor de content/site.ts
+ *   5. localhost — último recurso, para o build nunca falhar por isto
+ *
+ * Só o servidor lê este valor (layout, sitemap, robots e JSON-LD), então ele
+ * não precisa do prefixo NEXT_PUBLIC_ — que existe para expor a variável ao
+ * navegador. Se algum dia um componente client precisar da URL base, passe-a
+ * por prop a partir de um server component em vez de tornar a variável pública.
  */
 export const baseUrl =
+  normalizeBaseUrl(process.env.SITE_URL) ??
   normalizeBaseUrl(process.env.NEXT_PUBLIC_SITE_URL) ??
   normalizeBaseUrl(process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL) ??
   normalizeBaseUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
