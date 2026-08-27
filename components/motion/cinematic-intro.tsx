@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-media-query';
-import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { useSmoothScroll } from '@/components/motion/smooth-scroll';
 import { LogoMark } from '@/components/icons/logo';
 import {
@@ -13,8 +12,6 @@ import {
   type IntroPhase,
   type Vec2,
 } from '@/lib/intro-particles';
-
-const SESSION_KEY = 'softly:preloaded';
 
 /* ══════════════════════════════════════════════════════════════════════════
    FONTE DO LOGO — ponto único de troca
@@ -87,11 +84,10 @@ const readColor = (name: string, fallback: string): string => {
  * cinematográfico no GSAP e o desenho barato no canvas, sem um sequer
  * re-render do React durante os 4 segundos.
  *
- * Roda uma vez por sessão, é pulável a qualquer momento e some por completo
- * quando o usuário pede menos movimento.
+ * Roda a cada carregamento de página, é pulável a qualquer momento e some por
+ * completo quando o usuário pede menos movimento.
  */
 export function CinematicIntro() {
-  const reduced = usePrefersReducedMotion();
   const isMobile = useIsMobile();
   const { stop, start } = useSmoothScroll();
   const [active, setActive] = useState(false);
@@ -100,8 +96,8 @@ export function CinematicIntro() {
   const [reducedIntro, setReducedIntro] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   /** Trava a decisão em uma única execução: em desenvolvimento o StrictMode
-   *  monta o efeito duas vezes, e a segunda passada encontrava a sessão já
-   *  marcada pela primeira — a intro nunca chegava a aparecer. */
+   *  monta o efeito duas vezes, e a intro não pode ser reiniciada no meio
+   *  da segunda passada. */
   const decidedRef = useRef(false);
 
   /* Decide se a intro roda — antes de qualquer trabalho pesado.
@@ -113,25 +109,17 @@ export function CinematicIntro() {
     if (decidedRef.current) return;
     decidedRef.current = true;
 
-    /* Atalhos de teste, porque a intro roda uma vez por sessão e isso torna
-       difícil revê-la durante o desenvolvimento:
-         ?intro=1  força a intro, mesmo já vista nesta sessão
-         ?intro=0  pula a intro                                            */
+    /* ?intro=0 pula a abertura — útil para inspecionar o site direto, e para
+       compartilhar um link que cai na home sem os 4 segundos.
+       (?intro=1 continua válido, mas hoje é redundante: a intro já roda em
+       todo carregamento.)                                                 */
     const forced = new URLSearchParams(window.location.search).get('intro');
     if (forced === '0') {
-      window.sessionStorage.setItem(SESSION_KEY, '1');
-      setGone(true);
-      return;
-    }
-
-    const seen = Boolean(window.sessionStorage.getItem(SESSION_KEY));
-    if (seen && forced !== '1') {
       setGone(true);
       return;
     }
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.sessionStorage.setItem(SESSION_KEY, '1');
 
     if (prefersReduced) {
       // Sem partículas e sem deslocamento: a marca entra e sai só com
@@ -163,7 +151,6 @@ export function CinematicIntro() {
 
     const finish = () => {
       if (disposed) return;
-      window.sessionStorage.setItem(SESSION_KEY, '1');
       document.body.style.overflow = previousOverflow;
       start();
       setGone(true);
