@@ -3,13 +3,13 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowRight, Check, Close, Minus } from '@/components/icons/ui-icons';
+import { ArrowRight, Check, Minus } from '@/components/icons/ui-icons';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/reveal';
 import { SectionHeading } from '@/components/section-heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { annualDiscountLabel, comparisonGroups, paymentNote, plans, type Plan } from '@/content/pricing';
+import { annualDiscountLabel, paymentNote, plans, type Plan } from '@/content/pricing';
 import { track } from '@/lib/analytics';
 import { formatCurrencyValue } from '@/lib/format';
 import { EASE_EXPO } from '@/lib/motion';
@@ -90,7 +90,6 @@ export function Pricing() {
           <p className="mx-auto mt-8 max-w-2xl text-center text-body-sm text-muted">{paymentNote}</p>
         </Reveal>
 
-        <ComparisonTable />
       </div>
     </section>
   );
@@ -136,7 +135,9 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
         {plan.badge ? <Badge variant="solid">{plan.badge}</Badge> : null}
       </div>
 
-      <p className="mt-6 text-body-sm text-body">{plan.description}</p>
+      {/* Sem parágrafo de descrição: ele competia com a lista de itens logo
+          abaixo, que diz a mesma coisa de forma útil, e a linha `audience`
+          acima já responde "isto é para quem". O campo saiu do conteúdo. */}
 
       <div className="mt-8">
         {plan.prefix ? (
@@ -215,90 +216,4 @@ function Cell({ value }: { value: string | boolean }) {
       </span>
     );
   return <span className="font-mono text-body-sm text-body">{value}</span>;
-}
-
-function ComparisonTable() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="mt-16">
-      <Reveal className="flex justify-center">
-        <Button variant="secondary" onClick={() => setOpen((value) => !value)}>
-          {open ? 'Esconder comparativo' : 'Ver comparativo completo'}
-        </Button>
-      </Reveal>
-
-      <AnimatePresence initial={false}>
-        {open ? (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_EXPO } }}
-            exit={{ opacity: 0, y: 8, transition: { duration: 0.25 } }}
-            className="mt-10 overflow-hidden rounded-bento border border-line/70"
-          >
-            <div className="no-scrollbar overflow-x-auto">
-              <table className="w-full min-w-[46rem] border-collapse text-left">
-                <caption className="sr-only">
-                  Comparativo de recursos entre os planos Essencial, Growth e Sob medida
-                </caption>
-                <thead>
-                  <tr className="bg-surface/70">
-                    <th scope="col" className="px-6 py-5 font-mono text-label uppercase text-muted">
-                      Recurso
-                    </th>
-                    {plans.map((plan) => (
-                      <th
-                        key={plan.id}
-                        scope="col"
-                        className={cn(
-                          'px-6 py-5 font-display text-display-sm text-title',
-                          plan.highlighted && 'text-brand-soft',
-                        )}
-                      >
-                        {plan.name}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisonGroups.map((group) => (
-                    <>
-                      <tr key={group.group} className="bg-surface/40">
-                        <th
-                          scope="colgroup"
-                          colSpan={4}
-                          className="px-6 py-3 font-mono text-label uppercase text-brand-soft"
-                        >
-                          {group.group}
-                        </th>
-                      </tr>
-                      {group.rows.map((row) => (
-                        <tr key={row.feature} className="border-t border-line/50">
-                          <th
-                            scope="row"
-                            className="px-6 py-4 text-body-sm font-normal text-body"
-                          >
-                            {row.feature}
-                          </th>
-                          <td className="px-6 py-4">
-                            <Cell value={row.essencial} />
-                          </td>
-                          <td className="bg-brand/[0.04] px-6 py-4">
-                            <Cell value={row.growth} />
-                          </td>
-                          <td className="px-6 py-4">
-                            <Cell value={row.sobMedida} />
-                          </td>
-                        </tr>
-                      ))}
-                    </>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </div>
-  );
 }

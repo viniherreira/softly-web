@@ -88,14 +88,18 @@ function ServiceCard({ service }: { service: Service }) {
       </p>
 
       <div className="mt-6 flex flex-1 flex-col">
-        <ul className="space-y-2.5">
-          {service.deliverables.map((item) => (
-            <li key={item} className="flex items-start gap-2.5 text-body-sm text-muted">
-              <Check className="mt-1 h-3.5 w-3.5 shrink-0 text-brand-soft" />
-              {item}
-            </li>
-          ))}
-        </ul>
+        {/* Só o destaque lista entregáveis (ver content/services.ts): nos
+            outros a lista repetia a descrição do próprio card. */}
+        {service.deliverables ? (
+          <ul className="space-y-2.5">
+            {service.deliverables.map((item) => (
+              <li key={item} className="flex items-start gap-2.5 text-body-sm text-muted">
+                <Check className="mt-1 h-3.5 w-3.5 shrink-0 text-brand-soft" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
         {/* Só o card de destaque ganha ilustração — é o que sustenta a área extra */}
         {featured ? <ConversionChart /> : null}
@@ -129,14 +133,18 @@ function PerformanceBand({ service }: { service: Service }) {
         <p className="mt-4 text-body-sm text-body">{service.description}</p>
       </div>
 
-      <ul className="grid flex-1 gap-x-8 gap-y-3 sm:grid-cols-3">
-        {service.deliverables.map((item) => (
-          <li key={item} className="flex items-start gap-2.5 text-body-sm text-muted">
-            <Check className="mt-1 h-3.5 w-3.5 shrink-0 text-brand-soft" />
-            {item}
-          </li>
-        ))}
-      </ul>
+      {service.deliverables ? (
+        <ul className="grid flex-1 gap-x-8 gap-y-3 sm:grid-cols-3">
+          {service.deliverables.map((item) => (
+            <li key={item} className="flex items-start gap-2.5 text-body-sm text-muted">
+              <Check className="mt-1 h-3.5 w-3.5 shrink-0 text-brand-soft" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="flex-1" />
+      )}
 
       <div className="lg:shrink-0">
         <ServiceLink href={service.href} />

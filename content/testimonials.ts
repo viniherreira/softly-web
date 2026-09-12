@@ -17,6 +17,9 @@ export type Testimonial = {
   projectSlug?: string;
 };
 
+/* Três depoimentos, não seis. Seis viravam 256 palavras num carrossel que
+   ninguém arrasta até o fim — os três primeiros já cobrem prazo, clareza de
+   escopo e recorrência, que são os três medos de quem contrata. */
 export const testimonials: Testimonial[] = [
   {
     id: 'marina',
@@ -50,39 +53,6 @@ export const testimonials: Testimonial[] = [
     rating: 5,
     initials: 'CM',
     projectSlug: 'mercado-vivo',
-  },
-  {
-    id: 'eduardo',
-    quote:
-      'Explicaram o que dava para automatizar e, com a mesma clareza, o que não valia a pena. É raro fornecedor tirar item do próprio orçamento.',
-    author: 'Eduardo Salles',
-    role: 'Sócio',
-    company: 'Contabiliza+',
-    rating: 5,
-    initials: 'ES',
-    projectSlug: 'contabiliza-mais',
-  },
-  {
-    id: 'helena',
-    quote:
-      'O site ficou com a cara do estúdio, não com a cara de um tema pronto. E carrega instantaneamente até com foto de obra em alta resolução.',
-    author: 'Helena Prado',
-    role: 'Arquiteta e fundadora',
-    company: 'Studio Lumen',
-    rating: 5,
-    initials: 'HP',
-    projectSlug: 'studio-lumen',
-  },
-  {
-    id: 'vinicius',
-    quote:
-      'Seguimos juntos há dois anos. Quando aparece uma ideia, eles dizem em dois dias se vale e quanto custa. Isso vale mais que o desenvolvimento em si.',
-    author: 'Vinícius Krauss',
-    role: 'Gerente comercial',
-    company: 'AgroSul Distribuidora',
-    rating: 5,
-    initials: 'VK',
-    projectSlug: 'agrosul-distribuidora',
   },
 ];
 

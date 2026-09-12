@@ -1,6 +1,5 @@
 import { JsonLd } from '@/components/json-ld';
 import { About } from '@/sections/about';
-import { Calculator } from '@/sections/calculator';
 import { DeliveryBand } from '@/sections/delivery-band';
 import { CtaFinal } from '@/sections/cta-final';
 import { Faq } from '@/sections/faq';
@@ -49,7 +48,6 @@ export default function HomePage() {
       <Process />
       <Portfolio />
       <Pricing />
-      <Calculator />
       <Testimonials />
       <Stats />
       <About />

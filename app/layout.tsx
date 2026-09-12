@@ -11,7 +11,6 @@ import { PageTransition } from '@/components/motion/page-transition';
 import { CinematicIntro } from '@/components/motion/cinematic-intro';
 import { ScrollProgressBar } from '@/components/motion/scroll-progress';
 import { SmoothScrollProvider } from '@/components/motion/smooth-scroll';
-import { ThemeProvider, themeInitScript } from '@/components/theme-provider';
 import { site } from '@/content/site';
 import { fontVariables } from '@/lib/fonts';
 import { baseUrl, buildMetadata } from '@/lib/seo';
@@ -46,24 +45,16 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  colorScheme: 'dark light',
-  themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#05070F' },
-    { media: '(prefers-color-scheme: light)', color: '#F6F8FC' },
-  ],
+  colorScheme: 'dark',
+  themeColor: '#0E0E11',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning className={fontVariables}>
-      <head>
-        {/* Define o tema antes da primeira pintura — sem flash de cor errada. */}
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
+    <html lang="pt-BR" className={fontVariables}>
       <body className="min-h-screen bg-bg font-sans text-body antialiased">
-        <ThemeProvider>
-          <SmoothScrollProvider>
-            <EstimateProvider>
+        <SmoothScrollProvider>
+          <EstimateProvider>
               <CinematicIntro />
               <ScrollProgressBar />
               <CustomCursor />
@@ -83,7 +74,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <CookieBanner />
             </EstimateProvider>
           </SmoothScrollProvider>
-        </ThemeProvider>
 
         <Analytics />
       </body>

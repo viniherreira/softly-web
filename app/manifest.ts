@@ -9,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: site.description,
     start_url: '/',
     display: 'standalone',
-    background_color: '#05070F',
-    theme_color: '#05070F',
+    background_color: '#0E0E11',
+    theme_color: '#0E0E11',
     lang: 'pt-BR',
     categories: ['business', 'productivity', 'developer'],
     // O SVG com sizes "any" atende ao critério de instalação do Chrome e evita

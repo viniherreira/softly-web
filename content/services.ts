@@ -1,5 +1,10 @@
 /**
  * Serviços exibidos no bento grid da home.
+ *
+ * Só o card em destaque tem `deliverables`. Nos outros cinco a lista saiu:
+ * cada card trazia descrição E lista de itens dizendo a mesma coisa duas
+ * vezes, e seis blocos desses viravam 170 palavras de bullet no meio da
+ * página. A descrição sozinha resolve; quem quer detalhe clica.
  * `size` controla a área do card no grid (o primeiro card é o destaque).
  * `icon` casa com a chave em components/icons/service-icons.tsx.
  */
@@ -16,7 +21,8 @@ export type Service = {
   icon: ServiceIcon;
   title: string;
   description: string;
-  deliverables: string[];
+  /** Só o card em destaque lista entregáveis — ver a nota no topo. */
+  deliverables?: string[];
   size: 'featured' | 'wide' | 'default';
   href: string;
 };
@@ -43,11 +49,6 @@ export const services: Service[] = [
     title: 'Aplicativos web e mobile',
     description:
       'Um app que seus clientes usam sem manual. Uma base de código, Android, iOS e navegador.',
-    deliverables: [
-      'React Native ou PWA',
-      'Publicação nas lojas',
-      'Notificações e offline',
-    ],
     size: 'default',
     href: '/#contato',
   },
@@ -57,11 +58,6 @@ export const services: Service[] = [
     title: 'Sistemas e plataformas sob medida',
     description:
       'Quando a planilha trava e o software de prateleira não serve, a gente constrói o que o seu processo pede.',
-    deliverables: [
-      'Painéis, agendas e portais',
-      'Multiusuário com permissões',
-      'Relatórios que a diretoria lê',
-    ],
     size: 'default',
     href: '/#contato',
   },
@@ -71,11 +67,6 @@ export const services: Service[] = [
     title: 'Automação e integrações',
     description:
       'Tarefa repetida vira rotina automática. WhatsApp, CRM, ERP e financeiro conversando entre si.',
-    deliverables: [
-      'WhatsApp Business API',
-      'Integração com CRM e ERP',
-      'Disparos e rotinas agendadas',
-    ],
     size: 'wide',
     href: '/#contato',
   },
@@ -85,11 +76,6 @@ export const services: Service[] = [
     title: 'Inteligência artificial aplicada',
     description:
       'IA resolvendo um problema real: triagem de atendimento, busca em documentos, resposta automática com contexto do seu negócio.',
-    deliverables: [
-      'Atendimento com IA no WhatsApp',
-      'Busca semântica em documentos',
-      'Classificação e resumo de leads',
-    ],
     size: 'default',
     href: '/#contato',
   },
@@ -99,11 +85,6 @@ export const services: Service[] = [
     title: 'Performance, SEO e analytics',
     description:
       'Diagnóstico do que trava, do que não indexa e do que você não está medindo. Depois, a correção.',
-    deliverables: [
-      'Core Web Vitals no verde',
-      'SEO técnico e conteúdo',
-      'GA4 e eventos de conversão',
-    ],
     size: 'default',
     href: '/#contato',
   },

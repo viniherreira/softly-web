@@ -4,9 +4,11 @@ export const about = {
   title: 'Somos engenharia de produto, não fábrica de site.',
   paragraphs: [
     'A Softly nasceu em 2025 com uma pergunta incômoda: por que empresa boa aceita software ruim? A resposta quase sempre era a mesma — porque contratou pelo preço da hora, não pelo resultado da entrega.',
-    'Trabalhamos ao contrário. Antes de desenhar tela, entendemos o número que precisa mudar. Depois construímos a coisa mais simples que faz esse número se mover, colocamos no ar e medimos. Se não mover, ajustamos.',
     'Somos dois engenheiros de software em São Paulo, e é isso mesmo: não terceirizamos desenvolvimento e não colocamos estagiário para tocar projeto de cliente. Quem vende é quem constrói.',
   ],
+  /* Dois valores, não quatro. "Entrega semanal" e "fala direta" já estavam
+     ditos na seção de processo e no painel de entrega — repetir aqui só
+     somava 60 palavras. Ficaram os dois que ninguém mais diz na página. */
   values: [
     {
       title: 'Escopo fechado, preço fechado',
@@ -15,14 +17,6 @@ export const about = {
     {
       title: 'O código é seu',
       description: 'Repositório, hospedagem e acessos ficam no seu nome. Nenhuma plataforma proprietária prendendo você a nós.',
-    },
-    {
-      title: 'Entrega semanal',
-      description: 'Ambiente de testes desde a primeira semana. Você acompanha o produto crescer, sem virada de chave arriscada.',
-    },
-    {
-      title: 'Fala direta',
-      description: 'Sem gerente de contato repassando recado. Você conversa com quem está construindo o seu projeto.',
     },
   ],
   /* O time é este — dois fundadores, os dois engenheiros de software.

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Check } from '@/components/icons/ui-icons';
 import { SectionHeading } from '@/components/section-heading';
 import { useIsDesktop } from '@/hooks/use-media-query';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
@@ -152,18 +151,6 @@ export function Process() {
 
                   <h3 className="mt-5 text-display-md text-title">{step.title}</h3>
                   <p className="mt-2.5 text-body-sm text-body">{step.description}</p>
-
-                  <div className="divider-glow my-5" />
-
-                  <p className="font-mono text-label uppercase text-muted">Você recebe</p>
-                  <ul className="mt-3.5 space-y-2">
-                    {step.deliverables.map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-body-sm text-body">
-                        <Check className="mt-1 h-3.5 w-3.5 shrink-0 text-accent" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
                 </li>
               );
             })}

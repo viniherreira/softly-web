@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Logo } from '@/components/icons/logo';
 import { ArrowUpRight, Close, Menu } from '@/components/icons/ui-icons';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { useScrollPast } from '@/hooks/use-scroll-past';
 import { primaryNav, site } from '@/content/site';
@@ -95,7 +94,6 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2.5">
-            <ThemeToggle className="hidden sm:grid" />
             <Button
               asChild
               size="sm"
@@ -172,7 +170,6 @@ export function Header() {
                   >
                     {site.contact.email}
                   </a>
-                  <ThemeToggle />
                 </div>
               </motion.div>
             </nav>

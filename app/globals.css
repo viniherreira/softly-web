@@ -13,16 +13,22 @@
      não sumiu — ele saiu do fundo e ficou só onde significa alguma coisa
      (marca, botão, link, foco, a figura do hero). Fundo azulado tingia tudo
      e roubava o pouco de cor que devia chamar atenção. */
-  --ink-900: 0 0 0;
-  --ink-800: 13 13 16;
-  --ink-700: 22 22 27;
+  /* Não é preto puro: #0E0E11. Preto absoluto num monitor OLED some da
+     moldura e faz a página parecer um buraco — some também a noção de
+     profundidade, porque não há de onde a superfície subir. Este cinza muito
+     escuro ainda lê como preto e devolve os degraus de elevação.
+     Ao mexer aqui, rode `node _contraste.mjs`: subir o fundo derruba o
+     contraste do texto secundário, que já vive perto do mínimo. */
+  --ink-900: 14 14 17;
+  --ink-800: 24 24 28;
+  --ink-700: 34 34 40;
   --blue-600: 27 92 255;
   --blue-500: 59 130 246;
   --blue-400: 96 165 250;
   --cyan-400: 34 211 238;
   --sky-glow: 76 141 255;
-  --slate-300: 172 172 182;
-  --slate-500: 122 122 134;
+  --slate-300: 178 178 188;
+  --slate-500: 136 136 148;
   --white: 250 250 252;
 
   /* Azul do ativo de marca, amostrado do arquivo oficial da logo (#0D90FB).
@@ -46,16 +52,19 @@
   color-scheme: dark;
 }
 
-/* ── Tema escuro (identidade principal) ─────────────────────────────────── */
-:root,
-[data-theme='dark'] {
+/* ── Tokens do tema (único) ─────────────────────────────────────────────────
+   O site é escuro, ponto. Havia aqui um tema claro completo com alternador
+   no header; saiu por decisão de produto. Se algum dia voltar, o padrão era
+   um bloco [data-theme='light'] sobrescrevendo esta mesma lista — veja o
+   histórico do git em vez de reconstruir do zero. */
+:root {
   --bg: var(--ink-900);
   --surface: var(--ink-800);
   --surface-2: var(--ink-700);
   --text: var(--white);
   --body: var(--slate-300);
   --muted: var(--slate-500);
-  --border: 44 44 52;
+  --border: 58 58 68;
   --brand: var(--blue-600);
   --brand-hover: var(--blue-500);
   --brand-soft: var(--blue-400); /* azul legível como TEXTO (7.9:1 sobre o fundo) */
@@ -78,44 +87,7 @@
   --spec-1: 0.055;
   --spec-2: 0.085;
   --spec-3: 0.12;
-  color-scheme: dark;
 }
-
-/* ── Tema claro (mesma identidade, azuis mais saturados) ────────────────── */
-[data-theme='light'] {
-  --bg: 246 248 252;
-  --surface: 255 255 255;
-  --surface-2: 237 242 250;
-  --text: 8 14 34;
-  --body: 47 58 86;
-  --muted: 90 102 133;
-  --border: 205 214 233;
-  --brand: 11 63 216;
-  --brand-hover: 27 92 255;
-  --brand-soft: 11 63 216;
-  --accent: 8 130 160;
-  --glow: 27 92 255;
-  --grid: 27 92 255;
-  --grid-opacity: 0.05;
-  --noise-opacity: 0.025;
-  --atmo: 0.45; /* no claro a luz precisa ser névoa, não lavagem azul */
-  --card-top-light: 255 255 255;
-
-  /* No claro a sombra é cinza-azulada e bem mais fraca: papel, não vidro
-     sobre um poço escuro. E a "luz especular" vira quase nada, porque num
-     fundo claro um brilho branco no topo do card não lê como volume. */
-  --shadow-1: 0 1px 2px -1px rgb(15 25 55 / 0.1), 0 6px 14px -8px rgb(15 25 55 / 0.14);
-  --shadow-2: 0 2px 5px -2px rgb(15 25 55 / 0.12), 0 14px 32px -14px rgb(15 25 55 / 0.18);
-  --shadow-3: 0 5px 12px -4px rgb(15 25 55 / 0.14), 0 28px 64px -24px rgb(15 25 55 / 0.22);
-  /* Zero de propósito: no claro o degradê branco no topo do card cria uma
-     faixa visível contra a superfície semitransparente, em vez de volume.
-     Aqui quem carrega a altura é só a sombra. */
-  --spec-1: 0;
-  --spec-2: 0;
-  --spec-3: 0;
-  color-scheme: light;
-}
-
 /* ═══════════════════════════════════════════════════════════════════════════
    BASE
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -295,19 +267,6 @@
       rgb(var(--surface) / 0.5);
     border: 1px solid rgb(var(--border) / 0.8);
   }
-
-  /* No tema claro o fio branco no topo vira sujeira, e superfície
-     semitransparente sobre um fundo já claro só suja a cor: os três níveis
-     viram papel opaco e a diferença entre eles fica por conta da sombra e da
-     borda, que é como profundidade funciona em fundo claro. */
-  [data-theme='light'] .card-surface,
-  [data-theme='light'] .surface-1,
-  [data-theme='light'] .surface-2,
-  [data-theme='light'] .surface-3 {
-    background-image: none;
-    background-color: rgb(var(--surface));
-  }
-
   /* Spotlight que segue o mouse — alimentado por --mx/--my via JS */
   .spotlight::before {
     content: '';

@@ -13,7 +13,6 @@ export type Plan = {
   id: string;
   name: string;
   audience: string;
-  description: string;
   priceMonthly: number | null;
   priceAnnual: number | null;
   priceNote: string;
@@ -33,8 +32,6 @@ export const plans: Plan[] = [
     id: 'essencial',
     name: 'Essencial',
     audience: 'Presença digital profissional',
-    description:
-      'Para quem precisa de uma página que carrega rápido, aparece no Google e converte visita em contato.',
     priceMonthly: 7900,
     priceAnnual: 7900,
     priceNote: 'projeto único, sem mensalidade obrigatória',
@@ -56,8 +53,6 @@ export const plans: Plan[] = [
     id: 'growth',
     name: 'Growth',
     audience: 'Site + automação + otimização contínua',
-    description:
-      'Para quem já tem demanda e precisa de um canal digital que melhore todo mês, não só no dia da entrega.',
     priceMonthly: 2900,
     priceAnnual: 2417,
     priceNote: 'por mês · setup de R$ 6.900 no primeiro mês',
@@ -81,8 +76,6 @@ export const plans: Plan[] = [
     id: 'sob-medida',
     name: 'Sob medida',
     audience: 'Sistemas, apps e SaaS',
-    description:
-      'Para produto digital com regra de negócio própria, integração pesada ou operação que precisa escalar.',
     priceMonthly: null,
     priceAnnual: null,
     priceNote: 'orçamento a partir de R$ 38.000',
@@ -102,54 +95,8 @@ export const plans: Plan[] = [
 ];
 
 /** Tabela comparativa completa exibida abaixo dos cards. */
-export type ComparisonRow = {
-  feature: string;
-  essencial: string | boolean;
-  growth: string | boolean;
-  sobMedida: string | boolean;
-};
 
-export const comparisonGroups: { group: string; rows: ComparisonRow[] }[] = [
-  {
-    group: 'Projeto',
-    rows: [
-      { feature: 'Design exclusivo (sem template)', essencial: true, growth: true, sobMedida: true },
-      { feature: 'Número de páginas', essencial: 'até 5', growth: 'ilimitado', sobMedida: 'sob escopo' },
-      { feature: 'Protótipo navegável antes do código', essencial: false, growth: true, sobMedida: true },
-      { feature: 'Redação dos textos', essencial: 'revisão', growth: 'redação completa', sobMedida: 'redação completa' },
-      { feature: 'Prazo de entrega', essencial: '3–4 semanas', growth: '4 semanas + evolução', sobMedida: 'sob cronograma' },
-    ],
-  },
-  {
-    group: 'Tecnologia',
-    rows: [
-      { feature: 'Hospedagem e domínio configurados', essencial: true, growth: true, sobMedida: true },
-      { feature: 'Painel de edição de conteúdo', essencial: true, growth: true, sobMedida: true },
-      { feature: 'Integração com WhatsApp', essencial: 'link direto', growth: 'API oficial', sobMedida: 'API oficial' },
-      { feature: 'Integração com CRM / ERP', essencial: false, growth: true, sobMedida: true },
-      { feature: 'IA aplicada ao atendimento', essencial: false, growth: 'opcional', sobMedida: true },
-      { feature: 'Área logada e permissões', essencial: false, growth: false, sobMedida: true },
-    ],
-  },
-  {
-    group: 'Crescimento',
-    rows: [
-      { feature: 'SEO técnico', essencial: true, growth: true, sobMedida: true },
-      { feature: 'Landing pages adicionais', essencial: 'sob orçamento', growth: '2 por mês', sobMedida: 'sob escopo' },
-      { feature: 'Testes A/B', essencial: false, growth: true, sobMedida: 'opcional' },
-      { feature: 'Relatório mensal', essencial: false, growth: true, sobMedida: true },
-    ],
-  },
-  {
-    group: 'Suporte',
-    rows: [
-      { feature: 'Ajustes inclusos após a entrega', essencial: '30 dias', growth: 'contínuo', sobMedida: 'em contrato' },
-      { feature: 'Tempo de resposta', essencial: '1 dia útil', growth: '4 horas úteis', sobMedida: 'SLA dedicado' },
-      { feature: 'Monitoramento de uptime', essencial: false, growth: true, sobMedida: true },
-      { feature: 'Propriedade do código', essencial: true, growth: true, sobMedida: true },
-    ],
-  },
-];
+
 
 export const paymentNote =
   'Pagamento em até 6× sem juros no cartão, Pix com 5% de desconto ou boleto parcelado em 3×. Projetos sob medida seguem cronograma de desembolso por entrega.'; // TODO: substituir por dado real
