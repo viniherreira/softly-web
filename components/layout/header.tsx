@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Logo } from '@/components/icons/logo';
 import { ArrowUpRight, Close, Menu } from '@/components/icons/ui-icons';
+import { useSmoothScroll } from '@/components/motion/smooth-scroll';
 import { Button } from '@/components/ui/button';
 import { useScrollPast } from '@/hooks/use-scroll-past';
 import { primaryNav, site } from '@/content/site';
@@ -24,15 +25,34 @@ export function Header() {
   const scrolled = useScrollPast(80);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { stop: stopScroll, start: startScroll } = useSmoothScroll();
 
   useEffect(() => setOpen(false), [pathname]);
 
+  /* Travar o fundo enquanto o menu está aberto.
+     `overflow: hidden` no body NÃO segura o Safari do iPhone — a página
+     continua rolando atrás do painel e, ao fechar, reaparece noutro ponto da
+     leitura. O que segura é tirar o body do fluxo, guardando a posição para
+     devolver na saída. O Lenis é parado junto: com o body fixo ele leria
+     scroll zero e brigaria com a restauração. */
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
+    if (!open) return;
+    const y = window.scrollY;
+    const { body } = document;
+    const previous = body.getAttribute('style') ?? '';
+
+    stopScroll();
+    body.style.position = 'fixed';
+    body.style.top = `-${y}px`;
+    body.style.insetInline = '0';
+    body.style.overflow = 'hidden';
+
     return () => {
-      document.body.style.overflow = '';
+      body.setAttribute('style', previous);
+      window.scrollTo(0, y);
+      startScroll();
     };
-  }, [open]);
+  }, [open, startScroll, stopScroll]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -131,7 +151,7 @@ export function Header() {
             <div className="dot-layer" />
             <nav
               aria-label="Navegação principal (mobile)"
-              className="shell flex h-full flex-col justify-center gap-2 pb-24 pt-[var(--header-h)]"
+              className="shell flex h-full flex-col justify-center gap-2 pb-[max(6rem,calc(env(safe-area-inset-bottom)+4rem))] pt-[var(--header-h)]"
             >
               {primaryNav.map((item, index) => (
                 <motion.div

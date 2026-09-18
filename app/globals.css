@@ -267,6 +267,25 @@
       rgb(var(--surface) / 0.5);
     border: 1px solid rgb(var(--border) / 0.8);
   }
+  /* Painel FLUTUANTE — a única superfície da casa que precisa ser opaca.
+     `.surface-3` nasceu para painel parado DENTRO da página, com o fundo do
+     site atrás; ali 50% de alpha e nenhum desfoque funcionam. O banner de
+     consentimento é outra coisa: ele paira sobre o conteúdo e, no celular,
+     cobre metade da primeira tela — com aquele alpha o título do hero
+     atravessava o texto do aviso, letra sobre letra. Superfície que
+     interrompe a leitura para pedir uma decisão não pode ser translúcida. */
+  .surface-overlay {
+    position: relative;
+    background:
+      linear-gradient(90deg, transparent, rgb(var(--card-top-light) / 0.22), transparent) top /
+        100% 1px no-repeat,
+      rgb(var(--surface) / 0.97);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgb(var(--border) / 0.9);
+    box-shadow: var(--shadow-3);
+  }
+
   /* Spotlight que segue o mouse — alimentado por --mx/--my via JS */
   .spotlight::before {
     content: '';

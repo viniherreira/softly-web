@@ -153,12 +153,20 @@ function PerformanceBand({ service }: { service: Service }) {
   );
 }
 
-/** Link de card: a seta anda e o traço sob o texto cresce da esquerda. */
+/**
+ * Link de card: a seta anda e o traço sob o texto cresce da esquerda.
+ *
+ * O `::before` transparente é o alvo de toque. Em caixa-alta de 12px o link
+ * mede 16px de altura — metade do mínimo de 24px da WCAG e um terço do que o
+ * polegar pede. Crescer por `padding` levaria junto o traço do sublinhado,
+ * que está preso em `-bottom-1.5`; o pseudo-elemento estende só a área
+ * clicável, sem mexer em uma linha do layout.
+ */
 function ServiceLink({ href }: { href: string }) {
   return (
     <Link
       href={href}
-      className="group/link relative inline-flex items-center gap-2 whitespace-nowrap font-mono text-label uppercase text-brand-soft"
+      className="group/link relative inline-flex items-center gap-2 whitespace-nowrap font-mono text-label uppercase text-brand-soft before:absolute before:-inset-x-2 before:-inset-y-3.5 before:content-['']"
     >
       Saiba mais
       <ArrowUpRight className="h-4 w-4 transition-transform duration-300 ease-expo group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />

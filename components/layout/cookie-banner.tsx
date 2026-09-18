@@ -58,9 +58,11 @@ export function CookieBanner() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_EXPO } }}
           exit={{ opacity: 0, y: 40, transition: { duration: 0.3, ease: EASE_EXPO } }}
-          className="fixed inset-x-4 bottom-4 z-[130] max-w-xl sm:bottom-6 sm:left-6 sm:right-auto"
+          /* `env()` no lugar de um valor fixo: no iPhone o `bottom-4` cru
+             encostava o painel na barra de gestos. */
+          className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-[130] max-w-xl sm:bottom-[max(1.5rem,env(safe-area-inset-bottom))] sm:left-6 sm:right-auto"
         >
-          <div className="surface-3 rounded-card p-6">
+          <div className="surface-overlay rounded-card p-6">
             <p className="font-mono text-label uppercase text-brand-soft">Privacidade</p>
             <p className="mt-3 text-body-sm text-body">
               Usamos cookies necessários para o site funcionar e, com a sua autorização, cookies de
@@ -87,7 +89,8 @@ export function CookieBanner() {
                       <div>
                         <p className="text-body-sm font-bold text-title">Necessários</p>
                         <p className="text-body-sm text-muted">
-                          Tema escolhido, segurança do formulário. Não podem ser desativados.
+                          Segurança do formulário e esta própria escolha. Não podem ser
+                          desativados.
                         </p>
                       </div>
                       <Switch checked disabled aria-label="Cookies necessários (sempre ativos)" />

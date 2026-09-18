@@ -117,8 +117,13 @@ function ProjectCard({ project }: { project: Project }) {
           <ProjectFrame project={project} />
         </div>
 
-        {/* Overlay de detalhes */}
-        <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink-900 via-ink-900/70 to-transparent p-6 opacity-0 transition-opacity duration-500 ease-expo group-hover:opacity-100">
+        {/* Overlay de detalhes — só existe onde existe hover.
+            `aria-hidden` porque o resumo abaixo repete o texto para quem
+            está no toque: sem isso o leitor de tela ouviria duas vezes. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink-900 via-ink-900/70 to-transparent p-6 opacity-0 transition-opacity duration-500 ease-expo group-hover:opacity-100"
+        >
           <div className="translate-y-4 transition-transform duration-500 ease-expo group-hover:translate-y-0">
             <p className="font-mono text-label uppercase text-accent">{project.segment}</p>
             <p className="mt-2 max-w-sm text-body-sm text-slate-300">{project.summary}</p>
@@ -148,6 +153,13 @@ function ProjectCard({ project }: { project: Project }) {
 
         <h3 className="mt-4 text-display-sm text-title">{project.client}</h3>
         <p className="mt-2 text-body-sm text-body">{project.title}</p>
+
+        {/* No celular não há hover, então o overlay nunca abre e o resumo —
+            a única frase que conta o que o projeto era — desaparecia junto.
+            Aqui ele volta, no corpo do card, onde há espaço para ele. */}
+        <p className="mt-2.5 text-body-sm text-muted [@media(hover:hover)]:hidden">
+          {project.summary}
+        </p>
 
         <div className="mt-6 flex items-end justify-between gap-4 pt-1">
           <p className="font-mono text-[1.05rem] text-brand-soft">{project.headlineResult}</p>

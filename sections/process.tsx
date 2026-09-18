@@ -16,6 +16,12 @@ import { cn } from '@/lib/utils';
  *
  * Mobile / reduced-motion: sem pin e sem scrub. Vira um carrossel horizontal
  * com scroll-snap nativo — mesma informação, custo de CPU quase zero.
+ *
+ * O TRILHO DE PROGRESSO VALE NOS DOIS. Antes ele só era alimentado pelo
+ * ScrollTrigger: no celular a barra ficava parada em 20% e o contador em
+ * "01 / 05" por mais que você arrastasse os cinco cards. Indicador que não
+ * indica é pior que indicador nenhum — agora o celular lê o `scrollLeft` do
+ * próprio carrossel e alimenta o mesmo estado.
  */
 export function Process() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -103,7 +109,7 @@ export function Process() {
           <div className="h-px flex-1 bg-line">
             <div
               className="h-px origin-left bg-gradient-to-r from-brand to-accent transition-transform duration-150 ease-linear"
-              style={{ transform: `scaleX(${pinned ? progress : 0.2})` }}
+              style={{ transform: `scaleX(${Math.max(progress, 0.02)})` }}
             />
           </div>
           <span className="font-mono text-label uppercase text-muted">
@@ -113,8 +119,19 @@ export function Process() {
 
         <div
           className={cn(
-            pinned ? 'mt-7 overflow-visible' : 'mt-10 no-scrollbar -mx-gutter overflow-x-auto px-gutter',
+            pinned
+              ? 'mt-7 overflow-visible'
+              : 'mt-10 no-scrollbar -mx-gutter overflow-x-auto scroll-px-gutter px-gutter',
           )}
+          onScroll={
+            pinned
+              ? undefined
+              : (event) => {
+                  const node = event.currentTarget;
+                  const span = node.scrollWidth - node.clientWidth;
+                  setProgress(span > 0 ? node.scrollLeft / span : 0);
+                }
+          }
         >
           <ol
             ref={trackRef}
@@ -124,15 +141,17 @@ export function Process() {
             )}
           >
             {processSteps.map((step, index) => {
-              const isActive = pinned && index === activeIndex;
+              const isActive = index === activeIndex;
               return (
                 <li
                   key={step.number}
                   className={cn(
                     'card-surface relative flex w-[82vw] shrink-0 snap-start flex-col rounded-bento p-6 transition-[transform,border-color,box-shadow] duration-500 ease-expo sm:w-[23rem] lg:w-[25rem] lg:p-7',
-                    isActive
-                      ? '-translate-y-2 border-brand/50 shadow-glow'
-                      : 'border-line/60',
+                    isActive ? 'border-brand/50 shadow-glow' : 'border-line/60',
+                    /* O card ativo só sobe no desktop: no carrossel o
+                       `overflow-x` também recorta no eixo Y, e subir 8px
+                       criaria uma barra de rolagem vertical dentro da faixa. */
+                    isActive && pinned && '-translate-y-2',
                   )}
                 >
                   <div className="flex items-baseline justify-between gap-4">

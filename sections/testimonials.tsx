@@ -1,8 +1,8 @@
 'use client';
 
-import { motion, useMotionValue } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ArrowRight, Drag, Play, Quote } from '@/components/icons/ui-icons';
 import { Reveal } from '@/components/motion/reveal';
 import { SectionHeading } from '@/components/section-heading';
@@ -10,34 +10,38 @@ import { Stars } from '@/components/ui/stars';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { testimonials, type Testimonial } from '@/content/testimonials';
 import { EASE_EXPO } from '@/lib/motion';
-import { cn } from '@/lib/utils';
 
 /**
- * Depoimentos em carrossel arrastável.
- * - Desktop: arraste com o mouse (drag do Framer, com limites calculados).
- * - Mobile: scroll horizontal nativo com snap.
- * - Teclado: setas ← → movem um card por vez; os cards são focáveis.
+ * Depoimentos em carrossel horizontal.
+ *
+ * ERA UM DRAG DO FRAMER, E ELE NÃO ANDAVA. O limite vinha de
+ * `track.scrollWidth - track.clientWidth` num `<ul>` com `w-max` — nesse
+ * elemento os dois valores são o MESMO número por definição (medido: 1037 e
+ * 1037), então o limite dava zero, `dragConstraints` virava {0,0} e o trilho
+ * só balançava e voltava. Os depoimentos 2 e 3 nunca apareceram para
+ * ninguém, em nenhum aparelho, e as setas do desktop chamavam a mesma conta.
+ *
+ * Agora é scroll nativo com snap, que é o que o comentário antigo já dizia
+ * que o celular fazia: no toque ganha inércia e snap do sistema, no desktop
+ * as setas viraram `scrollBy` e o trackpad passa a rolar na horizontal. Sem
+ * biblioteca no meio do gesto mais básico que existe.
+ *
+ * Teclado: as setas ← → movem um card por vez; os cards são focáveis.
  */
 export function Testimonials() {
   const trackRef = useRef<HTMLUListElement>(null);
-  const [constraint, setConstraint] = useState(0);
-  const x = useMotionValue(0);
   const reduced = usePrefersReducedMotion();
 
-  useEffect(() => {
-    const measure = () => {
-      const node = trackRef.current;
-      if (!node) return;
-      setConstraint(Math.max(0, node.scrollWidth - node.clientWidth));
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
-
   const nudge = (direction: 1 | -1) => {
-    const next = Math.min(0, Math.max(-constraint, x.get() - direction * 380));
-    x.set(next);
+    const node = trackRef.current;
+    if (!node) return;
+    /* Um card por toque: a largura do primeiro item mais o gap, seja ele
+       80vw no celular ou 26rem no desktop. */
+    const card = node.firstElementChild?.getBoundingClientRect().width ?? 380;
+    node.scrollBy({
+      left: direction * (card + 20),
+      behavior: reduced ? 'auto' : 'smooth',
+    });
   };
 
   return (
@@ -78,21 +82,19 @@ export function Testimonials() {
 
       <Reveal delay={0.1}>
         <div
-          className="mt-14 cursor-grab active:cursor-grabbing"
-          data-cursor="arrastar"
+          className="mt-14"
           onKeyDown={(event) => {
             if (event.key === 'ArrowRight') nudge(1);
             if (event.key === 'ArrowLeft') nudge(-1);
           }}
         >
-          <motion.ul
+          {/* 80vw, e não 85: é o que faz o próximo card assomar uns 55px na
+              borda do celular. Esse pedaço à mostra é a única coisa que
+              avisa que há mais para o lado — a dica "Arraste" com as setas
+              vive só no desktop. */}
+          <ul
             ref={trackRef}
-            drag={reduced ? false : 'x'}
-            dragConstraints={{ left: -constraint, right: 0 }}
-            dragElastic={0.08}
-            dragTransition={{ power: 0.25, timeConstant: 260 }}
-            style={{ x }}
-            className="no-scrollbar flex w-max gap-5 px-gutter"
+            className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-gutter px-gutter pb-3"
           >
             {testimonials.map((item, index) => (
               <motion.li
@@ -101,12 +103,12 @@ export function Testimonials() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.7, ease: EASE_EXPO, delay: Math.min(index, 3) * 0.07 }}
-                className="w-[85vw] shrink-0 sm:w-[26rem]"
+                className="w-[80vw] shrink-0 snap-start sm:w-[26rem]"
               >
                 <TestimonialCard testimonial={item} />
               </motion.li>
             ))}
-          </motion.ul>
+          </ul>
         </div>
       </Reveal>
     </section>
@@ -117,7 +119,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <figure className="card-surface spotlight group relative flex h-full flex-col rounded-bento p-7 shadow-e1 transition-[transform,box-shadow] duration-500 ease-expo hover:-translate-y-1.5 hover:shadow-e2">
+    <figure className="card-surface spotlight group relative flex h-full flex-col rounded-bento p-6 shadow-e1 transition-[transform,box-shadow] duration-500 ease-expo hover:-translate-y-1.5 hover:shadow-e2 sm:p-7">
       <Quote className="h-9 w-9 text-brand/25 transition-colors duration-500 ease-expo group-hover:text-brand/45" />
 
       <blockquote className="mt-5 flex-1 text-body text-body">
@@ -154,7 +156,12 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
       <div className="divider-glow my-6" />
 
-      <figcaption className="flex items-center gap-4">
+      {/* Avatar, nome e nota numa linha só cabem a partir de `sm`. No card de
+          300px do celular sobravam 74px para o nome, e "Dra. Marina Ferraz"
+          quebrava em três linhas com as estrelas espremidas ao lado. Aqui a
+          nota desce para uma linha própria e o nome fica com a largura
+          inteira. */}
+      <figcaption className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3.5 sm:grid-cols-[auto_1fr_auto]">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-pill bg-gradient-to-br from-brand to-accent p-[2px]">
           <span className="grid h-full w-full place-items-center rounded-pill bg-surface font-mono text-body-sm text-title">
             {testimonial.initials}
@@ -166,13 +173,18 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             {testimonial.role} · {testimonial.company}
           </span>
         </span>
-        <Stars rating={testimonial.rating} className="ml-auto shrink-0" />
+        <Stars
+          rating={testimonial.rating}
+          className="col-span-2 shrink-0 sm:col-span-1 sm:justify-self-end"
+        />
       </figcaption>
 
       {testimonial.projectSlug ? (
         <Link
           href={`/projetos/${testimonial.projectSlug}`}
-          className="mt-5 inline-flex items-center gap-2 font-mono text-label uppercase text-brand-soft transition-transform duration-300 ease-expo hover:translate-x-1"
+          /* `py` generoso com `mt` curto: o alvo de toque vai a 44px sem que
+             o texto saia do lugar onde estava com `mt-5`. */
+          className="mt-1.5 inline-flex items-center gap-2 py-3.5 font-mono text-label uppercase text-brand-soft transition-transform duration-300 ease-expo hover:translate-x-1"
         >
           Ver o projeto
           <ArrowRight className="h-4 w-4" />

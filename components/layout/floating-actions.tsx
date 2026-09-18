@@ -27,7 +27,9 @@ export function FloatingActions() {
   }, [progress]);
 
   return (
-    <div className="pointer-events-none fixed bottom-5 right-5 z-[110] flex flex-col items-end gap-3 sm:bottom-8 sm:right-8">
+    /* A barra de gestos do iPhone come os últimos ~34px da tela: sem o
+       `env()` o botão do WhatsApp nasce em cima dela e o toque vira swipe. */
+    <div className="pointer-events-none fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))] z-[110] flex flex-col items-end gap-3 sm:bottom-[max(2rem,env(safe-area-inset-bottom))] sm:right-8">
       <AnimatePresence>
         {visible ? (
           <motion.button

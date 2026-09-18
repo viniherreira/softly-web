@@ -140,12 +140,15 @@ export function Footer() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="seu@email.com.br"
-                  className="h-10 min-w-0 flex-1 bg-transparent px-3 text-body-sm text-title outline-none placeholder:text-muted"
+                  /* 16px é o piso: abaixo disso o Safari do iPhone dá zoom na
+                     página inteira ao focar o campo, e o usuário cai numa
+                     viewport torta que ele não pediu. */
+                  className="h-11 min-w-0 flex-1 bg-transparent px-3 text-base text-title outline-none placeholder:text-muted md:h-10 md:text-body-sm"
                 />
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="group grid h-10 w-10 shrink-0 place-items-center rounded-pill bg-brand text-white transition-all duration-300 ease-expo hover:shadow-glow disabled:opacity-60"
+                  className="group grid h-11 w-11 shrink-0 place-items-center rounded-pill bg-brand text-white transition-all duration-300 ease-expo hover:shadow-glow disabled:opacity-60 md:h-10 md:w-10"
                 >
                   <span className="sr-only">Inscrever</span>
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-expo group-hover:translate-x-0.5" />

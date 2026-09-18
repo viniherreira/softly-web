@@ -12,20 +12,34 @@ import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
  * para fora do escuro. O gesto e o texto são a mesma ação: por isso o recorte
  * da frase está amarrado ao avanço da sequência, e não a um tempo próprio.
  *
- * POR QUE NÃO COBRE A TELA INTEIRA
- * O vídeo é 16:9 (1280×720) e a mão vive na borda ESQUERDA. Um `cover` na
- * viewport recortaria as laterais e comeria justamente o sujeito. No desktop
- * ele ocupa 100% da largura e a altura sai da proporção: a faixa preta que
- * sobra acima e abaixo é o mesmo preto do vídeo, então a emenda não aparece —
- * e é ali que a frase cabe sem disputar com o fio.
- * No celular a regra inverte (ver o comentário no JSX).
+ * O QUADRO NUNCA É CORTADO NA HORIZONTAL
+ * A mão entra e sai pela borda ESQUERDA e o fio precisa atravessar até a
+ * direita — medido quadro a quadro: no 000 a mão está em 42–58% da largura,
+ * no 047 ela já saiu pela esquerda e o que ocupa a cena é o fio de ponta a
+ * ponta. Cortar os lados come exatamente o gesto.
+ *
+ * Era isso que acontecia no celular: o canvas tinha altura fixa (44svh) e a
+ * largura saía da proporção 16:9, o que dava 635px de quadro dentro de uma
+ * tela de 375 — 41% do vídeo ficava fora, ancorado à esquerda, e o sujeito
+ * passava metade da sequência encostado na borda direita da área visível.
+ *
+ * O que o celular corta agora é a FAIXA MORTA DO TOPO. Varrendo os 48 quadros,
+ * nenhum pixel acima de 28,7% da altura passa de 28/255 — é preto liso. O
+ * canvas pede a proporção 1920×799 no celular e `draw` deduz o recorte da
+ * caixa que o CSS entregou, ancorado embaixo. Resultado: o quadro inteiro na
+ * largura da tela, sem borda preta inútil empurrando a frase para longe do
+ * fio. No desktop a caixa é 16:9, a conta dá recorte zero e nada muda.
+ *
+ * A frase acompanha: sobreposta ao vídeo no desktop (onde o quadro é alto e
+ * sobra preto embaixo), logo abaixo dele no celular (onde a faixa tem 156px
+ * e qualquer texto por cima cobriria o fio).
  *
  * ORIGEM E QUALIDADE DOS QUADROS
  * /public/fio vem do MP4 do cliente já reprocessado para 2560×1440, fatiado
- * em 48 quadros e reduzido para 1920×1080. Quatro decisões, todas medidas —
- * a métrica é o perfil vertical do fio de luz num canvas de 2860px (o caso
- * de um desktop retina): pico de brilho alto e faixa estreita a meia altura
- * significam linha nítida.
+ * em 48 quadros e reduzido para 1920×1080. As decisões abaixo são todas
+ * medidas — a métrica é o perfil vertical do fio de luz num canvas de 2860px
+ * (o caso de um desktop retina): pico de brilho alto e faixa estreita a meia
+ * altura significam linha nítida.
  *
  * 1. 48 QUADROS BASTAM. O movimento entre vizinhos é de 2,26/255 em média
  *    (máximo 3,92), sem nenhum salto. Dobrar a contagem não compraria
@@ -62,6 +76,14 @@ import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
  *    luminância ZERO, então um retângulo preto por cima é indistinguível do
  *    fundo. Conferido depois: 0 de luminância máxima em todo o canto.
  *
+ * 7. O CELULAR BAIXA OUTRO CONJUNTO. /fio/sm é o mesmo material em 1280×720:
+ *    493 KB contra 890 KB, 45% a menos numa rede de celular. Num telefone em
+ *    pé a caixa tem 750px de dispositivo, então 1280 ainda chega
+ *    supersampleado; deitado tem 1624, e 1,27x de ampliação não aparece.
+ *    Medido no tamanho de exibição contra a fonte HD: erro médio de 0,31 a
+ *    0,80 em 255, e o perfil do fio empata (pico 193–195 contra 190–198).
+ *    Ao reextrair a sequência, gerar os DOIS conjuntos.
+ *
  * O `sharpen` que existia aqui SAIU: ele compensava a falta de detalhe do
  * 1280. Com a fonte HD ele só devolvia halo — afiar o que já está nítido
  * alarga a linha em vez de estreitá-la.
@@ -78,10 +100,29 @@ import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
  */
 
 const FRAMES = 48;
-const frameSrc = (index: number) => `/fio/${String(index).padStart(3, '0')}.webp`;
+const frameSrc = (index: number, small: boolean) =>
+  `/fio/${small ? 'sm/' : ''}${String(index).padStart(3, '0')}.webp`;
 
-/** Dimensão dos quadros entregues (ver a nota sobre qualidade acima). */
+/** Proporção do material entregue (ver a nota sobre qualidade acima). */
 const FRAME = { width: 1920, height: 1080 };
+
+/**
+ * Quando vale baixar o conjunto leve. Duas condições, cada uma respondendo a
+ * uma coisa diferente:
+ *
+ * - `SM_MAX_CSS_PX` é a pergunta "isto é um telefone?". O motivo de existir um
+ *   conjunto menor é a rede do celular, não a tela. Um telefone em pé tem 375
+ *   e deitado 812; um laptop começa em 1280.
+ * - `SM_MAX_DEVICE_PX` é o teto de ampliação: acima de 1,3x da fonte de 1280 a
+ *   linha do fio começa a borrar, e aí o peso extra do conjunto de 1920 se
+ *   paga.
+ *
+ * Sem a primeira condição um laptop de 1440 sem retina (1440 pixels reais,
+ * abaixo do teto) cairia no conjunto leve e veria a cena central da página
+ * ampliada 1,12x — economia irrelevante no lugar mais visível do site.
+ */
+const SM_MAX_CSS_PX = 900;
+const SM_MAX_DEVICE_PX = 1664;
 
 /**
  * Janela em que a frase é descoberta, em fração do avanço da sequência.
@@ -96,7 +137,12 @@ export function Signal() {
   const imagesRef = useRef<HTMLImageElement[]>([]);
   /** Último quadro efetivamente desenhado — evita redesenhar o mesmo. */
   const drawnRef = useRef(-1);
-  const textRef = useRef<HTMLDivElement>(null);
+  /**
+   * Fração da altura do quadro descartada no topo, deduzida da caixa que o
+   * CSS entregou. Recalculada em todo resize.
+   */
+  const cropRef = useRef(0);
+  const textRef = useRef<HTMLHeadingElement>(null);
   const reduced = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
@@ -124,9 +170,21 @@ export function Signal() {
 
     const context = canvas.getContext('2d');
     const image = imagesRef.current[usable];
-    if (!context || !image) return;
+    if (!context || !image?.naturalHeight) return;
 
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    /* Ancorado EMBAIXO: o que sai é a faixa morta do topo. */
+    const sh = Math.round(image.naturalHeight * (1 - cropRef.current));
+    context.drawImage(
+      image,
+      0,
+      image.naturalHeight - sh,
+      image.naturalWidth,
+      sh,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
     drawnRef.current = usable;
   }, []);
 
@@ -134,25 +192,40 @@ export function Signal() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    if (!rect.width) return;
-    /* Teto de 2: acima disso a fonte (1280px) não tem detalhe para entregar
+    if (!rect.width || !rect.height) return;
+
+    /* Teto de 2: acima disso nem o conjunto de 1920 tem detalhe para entregar
        e só custaria memória de textura. */
     const ratio = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(rect.width * ratio);
     canvas.height = Math.round(rect.height * ratio);
+
+    /* Quanto da altura do quadro cabe na proporção que o CSS pediu. Nunca o
+       contrário: se a caixa fosse mais ALTA que o material, preencher exigiria
+       cortar os lados — que é justamente o que não pode. Nesse caso o recorte
+       fica em zero e a imagem estica de leve; não existe caixa assim no
+       layout atual. */
+    const source = FRAME.width / FRAME.height;
+    const box = rect.width / rect.height;
+    cropRef.current = box > source ? 1 - source / box : 0;
+
     const last = drawnRef.current;
     drawnRef.current = -1;
     draw(last < 0 ? 0 : last);
   }, [draw]);
 
   useEffect(() => {
+    const ratio = Math.min(2, window.devicePixelRatio || 1);
+    const small =
+      window.innerWidth <= SM_MAX_CSS_PX && window.innerWidth * ratio <= SM_MAX_DEVICE_PX;
+
     imagesRef.current = Array.from({ length: FRAMES }, (_, index) => {
       const image = new Image();
       /* O primeiro quadro é o que aparece antes de qualquer rolagem; o resto
          chega em segundo plano. */
       image.fetchPriority = index === 0 ? 'high' : 'low';
       image.decoding = 'async';
-      image.src = frameSrc(index);
+      image.src = frameSrc(index, small);
       if (index === 0) image.onload = () => draw(0);
       return image;
     });
@@ -197,7 +270,9 @@ export function Signal() {
     <section
       ref={ref}
       aria-labelledby="sinal-titulo"
-      className={reduced ? 'relative' : 'relative h-[200vh] md:h-[260vh]'}
+      /* No celular o trecho rolável é mais curto: dois deslizes de polegar
+         para a mesma frase, em vez de três. */
+      className={reduced ? 'relative' : 'relative h-[170vh] md:h-[260vh]'}
     >
       <div
         className={
@@ -206,34 +281,26 @@ export function Signal() {
             : 'sticky top-0 flex h-svh flex-col justify-center overflow-hidden'
         }
       >
-        {/* Desktop: largura cheia, altura pela proporção — o que sobra acima e
-            abaixo é preto, o mesmo preto do vídeo, então a emenda não aparece.
-
-            Celular: 16:9 em 390px de largura dá 219px de altura, e nessa faixa
-            o texto não caberia POR CIMA do vídeo — caía abaixo dele. Aí a
-            altura manda e a largura transborda, ancorada à ESQUERDA: o que sai
-            da tela é a ponta direita do fio, que já continua fora do quadro de
-            qualquer jeito. A mão, que é o sujeito, fica. */}
-        <div className="relative w-full overflow-hidden">
+        <div className="relative w-full">
+          {/* A proporção é o único lugar que muda entre celular e desktop — a
+              conta do recorte em `resize` sai daqui. */}
           <canvas
             ref={canvasRef}
             aria-hidden="true"
-            className="h-[44svh] w-auto max-w-none md:h-auto md:w-full"
-            style={{ aspectRatio: `${FRAME.width} / ${FRAME.height}` }}
+            className="block aspect-[1920/799] w-full md:aspect-[16/9]"
           />
 
-          {/* A frase mora DENTRO do wrapper do vídeo, não da seção: assim ela
-              fica sobre o quadro em qualquer viewport. Ancorada na altura da
-              seção, no celular ela caía abaixo do vídeo, porque lá o quadro é
-              baixo e centrado. Aqui o quadro é preto de ponta a ponta na
-              faixa de baixo, então o texto não precisa de escurecimento. */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-[8%] md:bottom-[14%]">
+          {/* Celular: a frase vem logo abaixo do quadro, encostada nele, para
+              ler como uma coisa só com o fio. Desktop: por cima, na faixa de
+              baixo — ali o quadro é preto de ponta a ponta e o texto dispensa
+              escurecimento. */}
+          <div className="mt-7 md:pointer-events-none md:absolute md:inset-x-0 md:bottom-[14%] md:mt-0">
             <div className="shell">
               <h2
                 id="sinal-titulo"
                 ref={textRef}
                 style={{ clipPath: reduced ? 'none' : 'inset(0 100% 0 0)' }}
-                className="max-w-3xl text-display-md text-white md:text-display-lg"
+                className="max-w-3xl text-display-lg text-white"
               >
                 Antes da primeira linha de código, a gente descobre{' '}
                 <span className="text-brand-soft">qual número precisa mudar.</span>
@@ -241,7 +308,6 @@ export function Signal() {
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );
