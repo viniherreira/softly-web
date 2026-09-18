@@ -26,3 +26,6 @@ yarn-error.log*
 
 # saída de scripts de captura
 /undefined
+
+# ferramentas locais de editor/agente — configuração de máquina, não do projeto
+.claude/
