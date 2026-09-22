@@ -66,9 +66,8 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -left-[10%] -top-[30%] -z-10 h-[36rem] w-[36rem] animate-mesh-drift rounded-pill blur-[130px]"
-          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.26), transparent 62%)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.143), transparent 62%)' }}
         />
-        <div className="grid-layer -z-10" />
 
         <div className="shell">
           <Reveal>

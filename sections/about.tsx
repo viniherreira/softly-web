@@ -53,10 +53,9 @@ export function About() {
                   className="absolute inset-0"
                   style={{
                     background:
-                      'radial-gradient(90% 70% at 80% 0%, rgb(var(--glow) / 0.22), transparent 60%)',
+                      'radial-gradient(90% 70% at 80% 0%, rgb(var(--glow) / 0.121), transparent 60%)',
                   }}
                 />
-                <div className="grid-layer" />
 
                 <div className="relative">
                   <p className="font-mono text-label uppercase text-brand-soft">

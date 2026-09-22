@@ -95,7 +95,7 @@ Regra do projeto: **componente não guarda texto e não guarda cor**. Texto vem 
 | Depoimentos e nota média | `content/testimonials.ts` |
 | Perguntas do FAQ (alimentam o JSON-LD também) | `content/faq.ts` |
 | Métricas do hero e da faixa de números | `content/stats.ts` |
-| Faixa marquee (clientes e stack) | `content/stack.ts` |
+| Faixa marquee dos projetos | vem de `content/projects.ts` |
 | Texto do bloco "Sobre" e time | `content/about.ts` |
 | Política de Privacidade e Termos de Uso | `content/legal.ts` |
 | Posts do blog | `content/blog/*.mdx` |
@@ -335,7 +335,6 @@ grep -rn "TODO: substituir" content lib app components
 | `content/calculator.ts` | valores base, preço por página/tela, preço das integrações, multiplicadores |
 | `content/testimonials.ts` | depoimentos, nomes, cargos, empresas e a nota média do `AggregateRating` |
 | `content/stats.ts` | projetos entregues, anos, recorrência, prazo médio, satisfação, uptime |
-| `content/stack.ts` | lista real de clientes atendidos |
 | `content/about.ts` | história, valores e time |
 | `content/legal.ts` | revisão jurídica, e-mail do encarregado (DPO), foro |
 | `lib/jsonld.ts` | latitude/longitude do endereço |
@@ -347,7 +346,7 @@ grep -rn "TODO: substituir" content lib app components
 | --- | --- | --- |
 | Capturas reais de Benjamin, ClinicaIQ e MarmitaPRO | `public/images/projects/*.webp` | 1600×1000; hoje são prévias de interface remontadas — ver `content/projects.ts` |
 | Depoimentos dos 5 clientes | `content/projects.ts` → campo `testimonial` | frase autorizada, nome e cargo |
-| Logos de clientes | `content/stack.ts` → campo `logo` | SVG monocromático em `/public/images/logos` |
+| Logos de clientes | `sections/logo-marquee.tsx` | SVG monocromático; hoje a faixa mostra o nome dos projetos em texto |
 | Fotos dos depoimentos | `content/testimonials.ts` → `avatar` | 400×400, AVIF |
 | Fotos do time | `sections/about.tsx` | 400×400, tratamento duotone (classe `.duotone` pronta) |
 | Depoimento em vídeo | `content/testimonials.ts` → `video` | MP4/WebM; o player customizado já existe e só aparece quando o campo é preenchido |

@@ -53,7 +53,6 @@ export function ProjectFrame({
           quality={82}
           priority={priority}
         />
-        <div className="noise-layer" />
       </div>
     );
   }
@@ -72,10 +71,9 @@ export function ProjectFrame({
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(120% 90% at 15% 0%, rgb(var(--glow) / 0.28), transparent 55%), radial-gradient(90% 80% at 90% 100%, rgb(var(--accent) / 0.16), transparent 60%)',
+            'radial-gradient(120% 90% at 15% 0%, rgb(var(--glow) / 0.154), transparent 55%), radial-gradient(90% 80% at 90% 100%, rgb(var(--accent) / 0.088), transparent 60%)',
         }}
       />
-      <div className="dot-layer" />
 
       <svg
         viewBox="0 0 640 400"
@@ -145,7 +143,6 @@ export function ProjectFrame({
         ) : null}
       </svg>
 
-      <div className="noise-layer" />
     </div>
   );
 }

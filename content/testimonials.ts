@@ -14,6 +14,13 @@ export type Testimonial = {
   initials: string;
   avatar?: string;
   video?: string;
+  /**
+   * Slug de um projeto do portfólio. Vazio em todos hoje: os três depoimentos
+   * apontavam para `clinica-vitalis`, `nord-engenharia` e `mercado-vivo`, que
+   * saíram quando o portfólio passou a listar os projetos reais — os links
+   * davam 404 na home. Ao trocar por depoimento real, aponte para o slug do
+   * case correspondente em content/projects.ts.
+   */
   projectSlug?: string;
 };
 
@@ -30,7 +37,6 @@ export const testimonials: Testimonial[] = [
     company: 'Clínica Vitalis',
     rating: 5,
     initials: 'MF',
-    projectSlug: 'clinica-vitalis',
   },
   {
     id: 'rafael',
@@ -41,7 +47,6 @@ export const testimonials: Testimonial[] = [
     company: 'Nord Engenharia',
     rating: 5,
     initials: 'RN',
-    projectSlug: 'nord-engenharia',
   },
   {
     id: 'claudia',
@@ -52,7 +57,6 @@ export const testimonials: Testimonial[] = [
     company: 'Mercado Vivo',
     rating: 5,
     initials: 'CM',
-    projectSlug: 'mercado-vivo',
   },
 ];
 

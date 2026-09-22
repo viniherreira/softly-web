@@ -206,7 +206,7 @@ export function Calculator() {
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-pill blur-[80px]"
-                style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.35), transparent 65%)' }}
+                style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.193), transparent 65%)' }}
               />
 
               <p className="font-mono text-label uppercase text-muted">Estimativa de investimento</p>

@@ -25,9 +25,8 @@ export function LegalPage({
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -left-[10%] -top-[34%] -z-10 h-[34rem] w-[34rem] rounded-pill blur-[130px]"
-          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.22), transparent 62%)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.121), transparent 62%)' }}
         />
-        <div className="grid-layer -z-10" />
 
         <div className="shell">
           <Reveal>
@@ -48,8 +47,11 @@ export function LegalPage({
       <div className="shell">
         <div className="divider-glow" />
 
+        {/* min-w-0: item de grid tem min-width auto, entao um token longo do
+            texto legal (CNPJ, e-mail do encarregado) esticava a coluna e a
+            pagina vazava 246px em 320px. */}
         <div className="mt-12 grid gap-12 lg:grid-cols-12">
-          <nav aria-label="Índice do documento" className="lg:col-span-3">
+          <nav aria-label="Índice do documento" className="min-w-0 lg:col-span-3">
             <div className="sticky top-[calc(var(--header-h)+2rem)]">
               <p className="font-mono text-label uppercase text-muted">Índice</p>
               <ul className="mt-5 space-y-2.5">
@@ -67,7 +69,7 @@ export function LegalPage({
             </div>
           </nav>
 
-          <div className="lg:col-span-8 lg:col-start-5">
+          <div className="min-w-0 break-words lg:col-span-8 lg:col-start-5">
             {sections.map((section) => (
               <section key={section.id} id={section.id} className="mb-14 scroll-mt-32">
                 <Reveal>

@@ -47,8 +47,6 @@ export function Footer() {
   return (
     <footer className="relative isolate overflow-hidden bg-elevated pt-20">
       <div className="divider-glow absolute inset-x-0 top-0" />
-      <div className="dot-layer" />
-      <div className="noise-layer" />
 
       <div className="shell relative">
         <div className="grid gap-14 pb-16 lg:grid-cols-12">
