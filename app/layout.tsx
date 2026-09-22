@@ -6,7 +6,6 @@ import { CookieBanner } from '@/components/layout/cookie-banner';
 import { FloatingActions } from '@/components/layout/floating-actions';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
-import { CustomCursor } from '@/components/motion/custom-cursor';
 import { PageTransition } from '@/components/motion/page-transition';
 import { CinematicIntro } from '@/components/motion/cinematic-intro';
 import { ScrollProgressBar } from '@/components/motion/scroll-progress';
@@ -57,7 +56,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <EstimateProvider>
               <CinematicIntro />
               <ScrollProgressBar />
-              <CustomCursor />
 
               <a href="#conteudo" className="skip-link">
                 Pular para o conteúdo

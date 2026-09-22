@@ -67,7 +67,7 @@ app/                  rotas (App Router)
 components/
   icons/              logo, ícones de UI e de serviço (SVG próprios)
   layout/             header, footer, banner LGPD, flutuantes, analytics
-  motion/             preloader, reveal, split-text, marquee, cursor, parallax…
+  motion/             intro, reveal, split-text, marquee, parallax…
   ui/                 botão, campo, switch, accordion, badge, card, slider
 content/              TODO O TEXTO DO SITE (é aqui que se edita)
   blog/*.mdx          posts
@@ -195,7 +195,6 @@ Para colocar Clash Display + Satoshi quando tiver os arquivos licenciados:
 | Marquee infinito com inversão pelo scroll | `components/motion/marquee.tsx` |
 | Parallax por scrub (GSAP) | `components/motion/parallax.tsx` |
 | Pin + scroll horizontal | `sections/process.tsx` |
-| Cursor customizado | `components/motion/custom-cursor.tsx` |
 | Smooth scroll (Lenis + ScrollTrigger) | `components/motion/smooth-scroll.tsx` |
 | Contadores | `components/motion/counter.tsx`, `animated-number.tsx` |
 | Curvas e durações | `lib/motion.ts` + `app/globals.css` |
@@ -207,8 +206,8 @@ Regras aplicadas em todo o site:
 - easing padrão `cubic-bezier(0.16, 1, 0.3, 1)`; micro 180ms, entrada 700ms,
   cinematográfica 1200ms;
 - `prefers-reduced-motion: reduce` desliga preloader, Lenis, parallax, scrub,
-  cursor e revelação por caractere — sobra fade de 150ms;
-- no mobile não há pin/scrub, cursor custom nem partículas.
+  revelação por caractere — sobra fade de 150ms;
+- no mobile não há pin/scrub nem partículas.
 
 **Decisão registrada:** não há Three.js/R3F. O ganho visual não pagava ~150KB de
 JS competindo com o LCP do hero; a profundidade foi obtida com camadas compostas

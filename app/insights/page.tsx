@@ -61,7 +61,6 @@ export default function InsightsPage() {
           <Reveal>
             <Link
               href={`/insights/${featured.slug}`}
-              data-cursor="ler"
               className="card-surface border-sheen group grid gap-8 overflow-hidden rounded-bento p-8 transition-transform duration-500 ease-expo hover:-translate-y-1.5 lg:grid-cols-12 lg:p-10"
             >
               <div className="lg:col-span-8">
@@ -91,7 +90,6 @@ export default function InsightsPage() {
             <RevealItem key={post.slug}>
               <Link
                 href={`/insights/${post.slug}`}
-                data-cursor="ler"
                 className={cn(
                   'card-surface border-sheen group flex h-full flex-col rounded-bento p-7 transition-transform duration-500 ease-expo hover:-translate-y-1.5',
                 )}

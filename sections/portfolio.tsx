@@ -23,18 +23,14 @@ import { cn } from '@/lib/utils';
  * continua assimétrica e nenhuma linha fica pela metade em qualquer filtro —
  * inclusive quando a categoria tem um projeto só.
  */
-type Span = { className: string; sizes: string };
+type Span = { className: string; sizes: string; wide: boolean };
 
 /** Até 1024px a grade é de uma coluna só, então o trecho móvel é comum a todos. */
 const MOBILE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 94vw';
 
-const WIDE: Span = { className: 'lg:col-span-12', sizes: `${MOBILE_SIZES}, 1200px` };
-const PAIR_CYCLE: readonly Span[] = [
-  { className: 'lg:col-span-7', sizes: `${MOBILE_SIZES}, 720px` },
-  { className: 'lg:col-span-5', sizes: `${MOBILE_SIZES}, 520px` },
-  { className: 'lg:col-span-5', sizes: `${MOBILE_SIZES}, 520px` },
-  { className: 'lg:col-span-7', sizes: `${MOBILE_SIZES}, 720px` },
-];
+/** Card de abertura: imagem ao lado do texto, ocupando a largura inteira. */
+const WIDE: Span = { className: 'lg:col-span-12', sizes: `${MOBILE_SIZES}, 660px`, wide: true };
+const HALF: Span = { className: 'lg:col-span-6', sizes: `${MOBILE_SIZES}, 620px`, wide: false };
 
 function spansFor(count: number): Span[] {
   const spans: Span[] = [];
@@ -45,9 +41,7 @@ function spansFor(count: number): Span[] {
     index = 1;
   }
 
-  for (let pair = 0; index < count; index += 1, pair += 1) {
-    spans.push(PAIR_CYCLE[pair % PAIR_CYCLE.length] ?? WIDE);
-  }
+  for (; index < count; index += 1) spans.push(HALF);
 
   return spans;
 }
@@ -125,7 +119,7 @@ export function Portfolio() {
                 transition={{ duration: 0.5, ease: EASE_EXPO, delay: index * 0.04 }}
                 className={cn('min-w-0 sm:col-span-1', spans[index]?.className)}
               >
-                <ProjectCard project={project} sizes={spans[index]?.sizes} />
+                <ProjectCard project={project} sizes={spans[index]?.sizes} wide={spans[index]?.wide ?? false} />
               </motion.article>
             ))}
           </AnimatePresence>
@@ -134,6 +128,7 @@ export function Portfolio() {
     </section>
   );
 }
+
 
 /**
  * O card inteiro abre o projeto no ar — é o que a pessoa espera de um
@@ -144,42 +139,43 @@ export function Portfolio() {
  * no DOM — leitor de tela ouve "VAR Center Log, link" em vez de três links
  * repetidos — e evita âncora dentro de âncora, que é HTML inválido.
  * O link do case fica acima desse `::after` com `relative z-10`.
+ *
+ * Tudo que antes só aparecia no hover (segmento, resumo, stack) agora está
+ * sempre na página: sem cursor customizado não há nada sinalizando que existe
+ * conteúdo escondido, e no toque o hover nunca acontecia.
+ *
+ * `wide` troca o empilhamento por duas colunas — imagem de um lado, texto do
+ * outro — no card de abertura da grade.
  */
-function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
+function ProjectCard({
+  project,
+  sizes,
+  wide,
+}: {
+  project: Project;
+  sizes?: string;
+  wide: boolean;
+}) {
   const caseHref = `/projetos/${project.slug}`;
+  const domain = project.liveUrl?.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 
   return (
-    <article className="group card-surface border-sheen relative flex h-full flex-col overflow-hidden rounded-bento p-3 shadow-e1 transition-[transform,box-shadow] duration-500 ease-expo hover:-translate-y-1.5 hover:shadow-e3">
+    <article
+      className={cn(
+        'group card-surface border-sheen relative flex h-full overflow-hidden rounded-bento p-3 shadow-e1 transition-[transform,box-shadow] duration-500 ease-expo hover:-translate-y-1.5 hover:shadow-e3',
+        wide ? 'flex-col lg:grid lg:grid-cols-2 lg:items-center lg:gap-3' : 'flex-col',
+      )}
+    >
+      {/* A proporcao 16/10 e mantida tambem no card largo: esticar a imagem
+          para a altura da coluna de texto fazia o object-cover comer a lateral
+          da captura — no VAR Center Log, o proprio titulo do site. */}
       <div className="relative overflow-hidden rounded-[18px]">
         <div className="transition-transform duration-700 ease-expo group-hover:scale-[1.03]">
           <ProjectFrame project={project} sizes={sizes} />
         </div>
-
-        {/* Overlay de detalhes — só existe onde existe hover.
-            `aria-hidden` porque o resumo abaixo repete o texto para quem
-            está no toque: sem isso o leitor de tela ouviria duas vezes. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink-900 via-ink-900/70 to-transparent p-6 opacity-0 transition-opacity duration-500 ease-expo group-hover:opacity-100"
-        >
-          <div className="translate-y-4 transition-transform duration-500 ease-expo group-hover:translate-y-0">
-            <p className="font-mono text-label uppercase text-accent">{project.segment}</p>
-            <p className="mt-2 max-w-sm text-body-sm text-slate-300">{project.summary}</p>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {project.stack.slice(0, 4).map((tech) => (
-                <li
-                  key={tech}
-                  className="rounded-pill border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[0.6875rem] text-slate-300"
-                >
-                  {tech}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
+      <div className={cn('flex flex-1 flex-col', wide ? 'p-6 lg:justify-center lg:p-10' : 'p-6')}>
         <div className="flex items-center gap-3">
           <span className="rounded-pill border border-line bg-surface/60 px-3 py-1.5 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted">
             {project.category}
@@ -188,14 +184,16 @@ function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
             {project.year}
           </span>
         </div>
+        <p className="mt-3 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-accent">
+          {project.segment}
+        </p>
 
-        <h3 className="mt-4 text-display-sm text-title">
+        <h3 className={cn('mt-4 text-title', wide ? 'text-display-md' : 'text-display-sm')}>
           {project.liveUrl ? (
             <a
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              data-cursor="abrir o projeto"
               onClick={() => track('project_open_live', { slug: project.slug })}
               className="after:absolute after:inset-0 after:content-[''] hover:text-brand-soft"
             >
@@ -205,7 +203,6 @@ function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
           ) : (
             <Link
               href={caseHref}
-              data-cursor="ver o case"
               onClick={() => track('project_view', { slug: project.slug })}
               className="after:absolute after:inset-0 after:content-[''] hover:text-brand-soft"
             >
@@ -213,23 +210,32 @@ function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
             </Link>
           )}
         </h3>
-        <p className="mt-2 text-body-sm text-body">{project.title}</p>
 
-        {/* No celular não há hover, então o overlay nunca abre e o resumo —
-            a única frase que conta o que o projeto era — desaparecia junto.
-            Aqui ele volta, no corpo do card, onde há espaço para ele. */}
-        <p className="mt-2.5 text-body-sm text-muted [@media(hover:hover)]:hidden">
-          {project.summary}
+        <p className="mt-3 text-lead text-body">{project.title}</p>
+        <p className="mt-3 max-w-prose text-body-sm text-muted">{project.summary}</p>
+
+        <ul className="mt-5 flex flex-wrap gap-2">
+          {project.stack.map((tech) => (
+            <li
+              key={tech}
+              className="rounded-pill border border-line bg-surface/50 px-2.5 py-1 font-mono text-[0.6875rem] text-muted"
+            >
+              {tech}
+            </li>
+          ))}
+        </ul>
+
+        <p className="mb-7 mt-6 font-mono text-[1.05rem] leading-snug text-brand-soft">
+          {project.headlineResult}
         </p>
 
-        <p className="mt-6 font-mono text-[1.05rem] text-brand-soft">{project.headlineResult}</p>
-
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-line/60 pt-4">
+        {/* mt-auto cola o rodapé na base: os cards de uma mesma linha têm
+            alturas de conteúdo diferentes e as duas ações ficam alinhadas. */}
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-line/60 pt-5">
           {/* z-10: precisa ficar acima do ::after do título, senão o clique
               aqui também abriria o site do projeto. */}
           <Link
             href={caseHref}
-            data-cursor="ver o case"
             onClick={() => track('project_view', { slug: project.slug })}
             className="relative z-10 inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-pill font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted transition-colors duration-300 ease-expo hover:text-title"
           >
@@ -242,9 +248,19 @@ function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
               ouvir o mesmo destino duas vezes. */}
           <span
             aria-hidden="true"
-            className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-pill border border-line px-3.5 py-2 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-brand-soft transition-all duration-300 ease-expo group-hover:border-brand group-hover:bg-brand group-hover:text-white"
+            className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-pill border border-line px-4 py-2.5 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-brand-soft transition-all duration-300 ease-expo group-hover:border-brand group-hover:bg-brand group-hover:text-white"
           >
-            {project.liveUrl ? 'Abrir o site' : 'Ver o case'}
+            {/* O dominio so cabe no card a partir de ~640px: em 320px
+                "marmitapro-alpha.vercel.app" media 276px num rodape de 206px e
+                era cortado pelo overflow-hidden do card. */}
+            {domain ? (
+              <>
+                <span className="sm:hidden">Abrir o site</span>
+                <span className="hidden sm:inline">{domain}</span>
+              </>
+            ) : (
+              'Ver o case'
+            )}
             <ArrowUpRight className="h-3.5 w-3.5" />
           </span>
         </div>

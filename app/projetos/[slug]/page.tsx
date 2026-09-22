@@ -126,7 +126,6 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        data-cursor="abrir no ar"
                         className="group/live inline-flex items-center gap-2 rounded-pill font-mono text-body-sm text-title transition-colors duration-300 hover:text-brand-soft"
                       >
                         {project.liveUrl.replace(/^https?:\/\//, '')}
@@ -265,7 +264,6 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
           <Reveal className="min-w-0">
             <Link
               href={`/projetos/${next.slug}`}
-              data-cursor="ver projeto"
               className="card-surface border-sheen group flex h-full flex-col justify-between rounded-bento p-8 transition-transform duration-500 ease-expo hover:-translate-y-1.5"
             >
               <p className="font-mono text-label uppercase text-muted">Próximo projeto</p>
