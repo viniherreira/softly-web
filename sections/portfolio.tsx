@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { ArrowUpRight } from '@/components/icons/ui-icons';
+import { ArrowRight, ArrowUpRight } from '@/components/icons/ui-icons';
 import { Reveal } from '@/components/motion/reveal';
 import { ProjectFrame } from '@/components/project-frame';
 import { SectionHeading } from '@/components/section-heading';
@@ -135,14 +135,21 @@ export function Portfolio() {
   );
 }
 
+/**
+ * O card inteiro abre o projeto no ar — é o que a pessoa espera de um
+ * portfólio. O case study continua a um clique, no link do rodapé do card.
+ *
+ * Como: o título recebe um `::after` esticado (`after:absolute after:inset-0`)
+ * que vira a área clicável do card inteiro. Isso mantém um só link por destino
+ * no DOM — leitor de tela ouve "VAR Center Log, link" em vez de três links
+ * repetidos — e evita âncora dentro de âncora, que é HTML inválido.
+ * O link do case fica acima desse `::after` com `relative z-10`.
+ */
 function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
+  const caseHref = `/projetos/${project.slug}`;
+
   return (
-    <Link
-      href={`/projetos/${project.slug}`}
-      data-cursor="ver projeto"
-      onClick={() => track('project_view', { slug: project.slug })}
-      className="group card-surface border-sheen relative flex h-full flex-col overflow-hidden rounded-bento p-3 shadow-e1 transition-[transform,box-shadow] duration-500 ease-expo hover:-translate-y-1.5 hover:shadow-e3"
-    >
+    <article className="group card-surface border-sheen relative flex h-full flex-col overflow-hidden rounded-bento p-3 shadow-e1 transition-[transform,box-shadow] duration-500 ease-expo hover:-translate-y-1.5 hover:shadow-e3">
       <div className="relative overflow-hidden rounded-[18px]">
         <div className="transition-transform duration-700 ease-expo group-hover:scale-[1.03]">
           <ProjectFrame project={project} sizes={sizes} />
@@ -182,7 +189,30 @@ function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
           </span>
         </div>
 
-        <h3 className="mt-4 text-display-sm text-title">{project.client}</h3>
+        <h3 className="mt-4 text-display-sm text-title">
+          {project.liveUrl ? (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="abrir o projeto"
+              onClick={() => track('project_open_live', { slug: project.slug })}
+              className="after:absolute after:inset-0 after:content-[''] hover:text-brand-soft"
+            >
+              {project.client}
+              <span className="sr-only"> — abrir o projeto no ar, em nova aba</span>
+            </a>
+          ) : (
+            <Link
+              href={caseHref}
+              data-cursor="ver o case"
+              onClick={() => track('project_view', { slug: project.slug })}
+              className="after:absolute after:inset-0 after:content-[''] hover:text-brand-soft"
+            >
+              {project.client}
+            </Link>
+          )}
+        </h3>
         <p className="mt-2 text-body-sm text-body">{project.title}</p>
 
         {/* No celular não há hover, então o overlay nunca abre e o resumo —
@@ -192,13 +222,33 @@ function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
           {project.summary}
         </p>
 
-        <div className="mt-6 flex items-end justify-between gap-4 pt-1">
-          <p className="font-mono text-[1.05rem] text-brand-soft">{project.headlineResult}</p>
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-pill border border-line text-brand-soft transition-all duration-300 ease-expo group-hover:border-brand group-hover:bg-brand group-hover:text-white">
-            <ArrowUpRight className="h-4 w-4" />
+        <p className="mt-6 font-mono text-[1.05rem] text-brand-soft">{project.headlineResult}</p>
+
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-line/60 pt-4">
+          {/* z-10: precisa ficar acima do ::after do título, senão o clique
+              aqui também abriria o site do projeto. */}
+          <Link
+            href={caseHref}
+            data-cursor="ver o case"
+            onClick={() => track('project_view', { slug: project.slug })}
+            className="relative z-10 inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-pill font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted transition-colors duration-300 ease-expo hover:text-title"
+          >
+            Ver o case
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+
+          {/* Decorativo: quem clica aqui cai no ::after do título e abre o
+              site do mesmo jeito. Fica aria-hidden para o leitor de tela não
+              ouvir o mesmo destino duas vezes. */}
+          <span
+            aria-hidden="true"
+            className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-pill border border-line px-3.5 py-2 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-brand-soft transition-all duration-300 ease-expo group-hover:border-brand group-hover:bg-brand group-hover:text-white"
+          >
+            {project.liveUrl ? 'Abrir o site' : 'Ver o case'}
+            <ArrowUpRight className="h-3.5 w-3.5" />
           </span>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }
