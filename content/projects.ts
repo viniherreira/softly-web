@@ -1,12 +1,30 @@
 /**
  * Portfólio + páginas de case study (/projetos/[slug]).
  *
- * Os nomes de cliente, números e depoimentos abaixo são exemplos plausíveis.
- * TODO: substituir por dado real — todos os campos deste arquivo.
+ * Todos os cinco projetos abaixo são reais e estão no ar. Textos, números e
+ * stack foram extraídos do código-fonte e do conteúdo publicado de cada um —
+ * nada aqui é exemplo inventado.
  *
- * IMAGENS: enquanto não houver captura real, o card renderiza um mockup vetorial
- * gerado em componente (components/project-frame.tsx). Para usar a imagem real,
- * preencha `image` com um arquivo em /public/images/projects (1600×1000, AVIF/WebP).
+ * REGRA DE HONESTIDADE DESTE ARQUIVO
+ * Nenhum resultado de negócio do cliente ("+X% de leads", "-Y% de faltas") é
+ * afirmado, porque nenhum foi medido por nós. O campo `results` traz apenas
+ * fatos verificáveis do que foi entregue (módulos, métricas do próprio motor,
+ * propriedades técnicas). Se um dia houver número de negócio auditado, ele
+ * entra aqui — com a fonte.
+ *
+ * IMAGENS (/public/images/projects, 1600×1000, WebP)
+ * - var-center-log.webp .......... captura real do site no ar
+ * - dra-michele-herreira.webp .... captura real do site no ar
+ * - benjamin.webp ................ prévia de interface: o app é de acesso por
+ * - clinica-iq.webp .............. convite / exige banco, então a tela foi
+ * - marmitapro.webp .............. remontada com os tokens de design, a copy e
+ *                                  os números reais de cada produto.
+ *   TODO: substituir as três prévias por captura da tela real (rodar o app,
+ *   exportar 1600×1000 e sobrescrever o arquivo — nada mais muda).
+ *
+ * TODO: substituir por dado real — depoimentos. Nenhum dos clientes tem
+ * citação autorizada ainda; preferimos não publicar frase atribuída a pessoa
+ * real sem autorização. Ao conseguir, preencha `testimonial`.
  */
 export type ProjectCategory = 'Sites' | 'Aplicativos' | 'Sistemas' | 'Automação e IA';
 
@@ -17,12 +35,14 @@ export type Project = {
   category: ProjectCategory;
   segment: string;
   year: number;
-  /** Frase curta e numérica exibida no card do portfólio. */
+  /** Frase curta e factual exibida no card do portfólio. */
   headlineResult: string;
   summary: string;
   /** 'featured' ocupa duas colunas no grid assimétrico. */
   size: 'featured' | 'default' | 'tall';
   image?: string;
+  /** Endereço público do projeto, quando existe. */
+  liveUrl?: string;
   device: 'desktop' | 'mobile' | 'dashboard';
   challenge: string[];
   solution: string[];
@@ -34,223 +54,190 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: 'clinica-vitalis',
-    client: 'Clínica Vitalis',
-    title: 'Agendamento online que reduziu falta de paciente pela metade',
+    slug: 'var-center-log',
+    client: 'VAR Center Log',
+    title: 'O maior condomínio logístico do Alto Tietê apresentado como imóvel de alto padrão',
     category: 'Sites',
-    segment: 'Saúde · 3 unidades',
-    year: 2025,
-    headlineResult: '+142% em leads em 3 meses',
+    segment: 'Logística · Suzano, SP',
+    year: 2026,
+    headlineResult: '65.000 m² em uma página só',
     summary:
-      'Site novo, agenda integrada e confirmação automática por WhatsApp para uma clínica que perdia hora vaga toda semana.',
+      'Site institucional e comercial de um condomínio logístico Triple AAA+ que abriga Mercado Livre, Shopee e Semar — com ficha técnica de cada galpão e a nova fase de expansão em pré-reserva.',
     size: 'featured',
     device: 'desktop',
-    duration: '7 semanas',
+    image: '/images/projects/var-center-log.webp',
+    liveUrl: 'https://www.varcenterlog.com',
+    duration: 'Contínuo, por fase',
     challenge: [
-      'O site antigo demorava 6,2s para carregar no celular — e 71% do tráfego vinha de celular.',
-      'O agendamento era feito só por telefone, das 9h às 18h. Fora disso, o paciente desistia.',
-      'A taxa de falta chegava a 27% das consultas marcadas, sem nenhuma confirmação prévia.',
+      'O antigo complexo da Cerâmica Gyotoku virou condomínio logístico em 2024, mas não tinha nenhuma presença digital — a prospecção dependia de indicação e placa na rua.',
+      'O público é misto: diretor de operações procurando metragem e pé-direito, e time imobiliário procurando localização e acesso rodoviário. As duas leituras precisavam caber na mesma página.',
+      'Havia muita informação técnica para organizar — 15 galpões, dez itens de infraestrutura, dez segmentos atendidos e uma expansão de 30.000 m² em obras.',
+      'Fotografia aérea captada por drone precisava sustentar a escala do empreendimento sem transformar a página num álbum pesado.',
     ],
     solution: [
-      'Site reconstruído em Next.js com renderização estática e imagens em AVIF: 1,1s de carregamento no 4G.',
-      'Agendamento online conectado à agenda das três unidades, com bloqueio de horário em tempo real.',
-      'Régua automática no WhatsApp: confirmação em 48h, lembrete em 3h e reagendamento em um clique.',
-      'Landing pages por especialidade, alimentando campanhas separadas de tráfego pago.',
+      'Narrativa em cinco atos — escala, história, infraestrutura, galpões disponíveis e localização —, cada um respondendo a uma pergunta que o locatário faz antes de agendar visita.',
+      'Cinco números logo no primeiro dobra (15 galpões, 65 mil m², 1.500+ empregos, 3,5 km do Rodoanel, +30 mil m² em obras) para qualificar o empreendimento antes de qualquer rolagem.',
+      'Marquee com as empresas instaladas rodando em duas direções: prova social que funciona mesmo para quem só olha o topo da página.',
+      'Ficha técnica por galpão — área útil, dimensões, pé-direito, docas e escritório incluso — com CTA direto para o WhatsApp da equipe comercial.',
+      'HTML, CSS e JavaScript escritos à mão, sem framework: IntersectionObserver para os reveals, rolagem suave nativa e menu mobile com fechamento por overlay, ESC e botão.',
     ],
-    stack: ['Next.js', 'TypeScript', 'Supabase', 'WhatsApp API', 'Vercel'],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'IntersectionObserver', 'Vercel'],
     results: [
-      { value: '+142%', label: 'leads em 3 meses' },
-      { value: '-68%', label: 'faltas em consultas' },
-      { value: '1,1s', label: 'carregamento no celular' },
-      { value: '38%', label: 'das marcações fora do horário comercial' },
+      { value: '15', label: 'galpões com ficha técnica própria' },
+      { value: '65.000 m²', label: 'de empreendimento descritos em uma página' },
+      { value: '0', label: 'frameworks — HTML, CSS e JS puros' },
+      { value: '6', label: 'seções âncora com rolagem suave e menu mobile' },
     ],
-    testimonial: {
-      quote:
-        'A agenda encheu e o telefone parou de tocar o dia inteiro. Minha recepção voltou a atender quem está na clínica.',
-      author: 'Dra. Marina Ferraz',
-      role: 'Diretora clínica, Clínica Vitalis',
-    },
   },
   {
-    slug: 'nord-engenharia',
-    client: 'Nord Engenharia',
-    title: 'Portal do cliente que tirou o acompanhamento de obra do e-mail',
-    category: 'Sistemas',
-    segment: 'Engenharia · B2B',
-    year: 2025,
-    headlineResult: '3,4× mais propostas enviadas',
-    summary:
-      'Site institucional e portal onde cada cliente acompanha medição, cronograma e documento da própria obra.',
-    size: 'default',
-    device: 'dashboard',
-    duration: '11 semanas',
-    challenge: [
-      'Cada obra gerava dezenas de e-mails com anexos duplicados e versões trocadas.',
-      'A equipe comercial levava 5 dias para montar uma proposta a partir de planilhas soltas.',
-      'Não havia registro de quem aprovou o quê — e isso já tinha custado retrabalho.',
-    ],
-    solution: [
-      'Portal com login por obra: cronograma, medições, fotos da semana e documentos versionados.',
-      'Gerador de propostas com composição de custo pré-cadastrada e PDF assinado digitalmente.',
-      'Trilha de auditoria em cada aprovação, exportável para o jurídico.',
-    ],
-    stack: ['Next.js', 'Node', 'PostgreSQL', 'AWS S3', 'Resend'],
-    results: [
-      { value: '3,4×', label: 'propostas enviadas por mês' },
-      { value: '5d → 6h', label: 'tempo de montagem da proposta' },
-      { value: '100%', label: 'das aprovações com registro' },
-    ],
-    testimonial: {
-      quote:
-        'O cliente para de ligar perguntando como está a obra. Ele abre o portal e vê. Isso mudou nossa rotina.',
-      author: 'Rafael Nordmann',
-      role: 'Sócio-diretor, Nord Engenharia',
-    },
-  },
-  {
-    slug: 'mercado-vivo',
-    client: 'Mercado Vivo',
-    title: 'App de pedidos que colocou 31% do faturamento no digital',
-    category: 'Aplicativos',
-    segment: 'Varejo alimentar',
-    year: 2024,
-    headlineResult: '31% do faturamento vindo do app',
-    summary:
-      'PWA de pedidos com lista recorrente, rota de entrega e pagamento no Pix — instalável sem passar por loja.',
-    size: 'tall',
-    device: 'mobile',
-    duration: '9 semanas',
-    challenge: [
-      'Os pedidos chegavam por WhatsApp e eram digitados à mão no caixa, com erro em 1 a cada 8.',
-      'Não existia histórico: o cliente recomeçava a compra do zero toda semana.',
-      'A entrega era roteirizada no olho, com dois entregadores cruzando o mesmo bairro.',
-    ],
-    solution: [
-      'PWA instalável, com catálogo em cache e funcionamento parcial offline.',
-      '"Comprar de novo" a partir do último pedido — a compra recorrente virou dois toques.',
-      'Roteirização automática das entregas por proximidade e janela de horário.',
-      'Pix com confirmação automática, sem conferência manual no caixa.',
-    ],
-    stack: ['Next.js', 'PWA', 'Supabase', 'Pix API', 'Mapbox'],
-    results: [
-      { value: '31%', label: 'do faturamento no canal digital' },
-      { value: '2,4×', label: 'frequência de recompra' },
-      { value: '-41%', label: 'custo por entrega' },
-    ],
-    testimonial: {
-      quote:
-        'A gente vendia por WhatsApp e achava que estava indo bem. Depois do app, vi o tamanho do que estava deixando na mesa.',
-      author: 'Cláudia Mesquita',
-      role: 'Proprietária, Mercado Vivo',
-    },
-  },
-  {
-    slug: 'contabiliza-mais',
-    client: 'Contabiliza+',
-    title: 'Onboarding de cliente automatizado do contrato ao primeiro balancete',
+    slug: 'benjamin',
+    client: 'Benjamin',
+    title: 'O ouro invisível de cada conversa: briefing comercial extraído de transcrição de reunião',
     category: 'Automação e IA',
-    segment: 'Contabilidade',
-    year: 2025,
-    headlineResult: '22 horas por semana devolvidas ao time',
+    segment: 'Inteligência conversacional · Challenge FIAP × TOTVS',
+    year: 2026,
+    headlineResult: 'R$ 0,00 por análise, p95 de 2–4 ms',
     summary:
-      'Fluxo que recebe documento, valida, cadastra no sistema contábil e avisa o responsável — sem ninguém digitar.',
+      'Motor que lê transcrição bruta de reunião de vendas e devolve oportunidades, risco de churn e o ecossistema do cliente — cada item preso à citação literal que o originou.',
     size: 'default',
     device: 'dashboard',
-    duration: '6 semanas',
+    image: '/images/projects/benjamin.webp',
+    liveUrl: 'https://benjamin-rose.vercel.app',
+    duration: '10 semanas',
     challenge: [
-      'Cada cliente novo consumia 4 horas de digitação e conferência de documento.',
-      'Documento faltando só aparecia no fim do mês, atrasando a entrega fiscal.',
-      'O time perdia o dia respondendo "quais documentos faltam?" no WhatsApp.',
+      'O desafio pedia processar 10.000 reuniões por dia em tempo real. Chamar um modelo de linguagem em cada uma cobraria por token e entregaria latência imprevisível — medimos 22,4 s, 4,5 s e 25,8 s para a mesma entrada.',
+      'Vendedor não confia em painel que afirma sem mostrar de onde tirou. Um briefing que erra com aparência de certeza é pior que briefing nenhum.',
+      'Transcrição real vem suja: erro de reconhecimento de fala, trecho inaudível, fala sobreposta. Limpar o texto antes de medir seria medir o cenário errado.',
+      'Trocar quem é o vendedor e quem é o cliente faz o briefing inteiro mentir — talk ratio, voz do cliente e sentimento dependem dessa atribuição.',
     ],
     solution: [
-      'Portal de envio com checklist por regime tributário e validação na hora do upload.',
-      'Leitura automática de documento com IA, extraindo CNPJ, sócios e datas para conferência.',
-      'Robô de cadastro no sistema contábil e alerta no WhatsApp a cada pendência.',
+      'Motor 100% determinístico em TypeScript puro, sem I/O: mesma entrada devolve sempre a mesma saída, cada campo auditável até a regra que o produziu.',
+      'Regra de evidência como invariante testada: item sem citação rastreável não é retornado. Um teste verifica em todo o corpus que `texto.slice(start, end) === quote`.',
+      'O LLM entra contido e opcional, por reunião, num botão do briefing — e só o que ancora numa citação literal aparece. O que não ancora é descartado e contado na tela.',
+      'Corpus real gravado e anotado: 12 cenários encenados, dois anotadores independentes por amostra, partição dev/holdout com o holdout nunca inspecionado item a item.',
+      'Anonimização que preserva o comprimento do texto (`###.###.###-##`, não `[CPF]`), porque é o que mantém os índices da citação válidos depois do tratamento.',
+      'Torre de controle com radar de dores agregado, contas em risco, pipeline por unidade de negócio e coaching de talk ratio.',
     ],
-    stack: ['Next.js', 'OpenAI', 'Node', 'PostgreSQL', 'WhatsApp API'],
+    stack: ['Next.js 15', 'TypeScript', 'Supabase', 'PostgreSQL', 'Tailwind v4', 'Zod', 'Vercel'],
     results: [
-      { value: '22h', label: 'por semana devolvidas ao time' },
-      { value: '4h → 25min', label: 'para abrir um cliente novo' },
-      { value: '-83%', label: 'de pendência descoberta no fim do mês' },
+      { value: 'R$ 0,00', label: 'de API por análise no caminho padrão' },
+      { value: '2–4 ms', label: 'latência p95 medida sobre o corpus' },
+      { value: '100%', label: 'dos itens com citação literal rastreável' },
+      { value: '70', label: 'testes automatizados, incluindo o invariante de evidência' },
     ],
-    testimonial: {
-      quote:
-        'Contratamos esperando organizar processo. Ganhamos capacidade: entramos 40 clientes sem contratar ninguém.',
-      author: 'Eduardo Salles',
-      role: 'Sócio, Contabiliza+',
-    },
   },
   {
-    slug: 'studio-lumen',
-    client: 'Studio Lumen',
-    title: 'Portfólio que ranqueou em primeiro no Google local em 4 meses',
-    category: 'Sites',
-    segment: 'Arquitetura',
-    year: 2024,
-    headlineResult: '1º lugar em "arquiteto em Florianópolis"',
+    slug: 'clinica-iq',
+    client: 'ClinicaIQ',
+    title: 'Agenda, prontuário e financeiro de clínica em um sistema multi-inquilino',
+    category: 'Sistemas',
+    segment: 'SaaS B2B · clínicas odontológicas e estéticas',
+    year: 2026,
+    headlineResult: '11 módulos sobre uma base multi-inquilino',
     summary:
-      'Site editorial com foco em obra, carregamento instantâneo e SEO local trabalhado projeto a projeto.',
+      'SaaS para clínicas com agenda por profissional, confirmação automática no WhatsApp, orçamento com link público e PDF, odontograma interativo e dashboard financeiro.',
+    size: 'default',
+    device: 'dashboard',
+    image: '/images/projects/clinica-iq.webp',
+    liveUrl: 'https://clinica-iq-web.vercel.app',
+    duration: 'Em desenvolvimento',
+    challenge: [
+      'Clínica pequena vive de agenda cheia, mas a confirmação de consulta é feita à mão, por telefone, pela mesma pessoa que atende quem está na recepção.',
+      'Orçamento impresso some. Sem link e sem registro de abertura, ninguém sabe se o paciente sequer leu a proposta.',
+      'Vários profissionais dividindo salas e horários geram conflito de agenda que só aparece quando o paciente já está na porta.',
+      'Prontuário guarda CPF, telefone e histórico clínico. LGPD não é item de backlog: é requisito de arquitetura.',
+      'Acessibilidade tratada como diferencial de produto, não como ajuste no fim — recepção, dentista e auxiliar precisam conseguir operar o sistema.',
+    ],
+    solution: [
+      'Multi-inquilino de verdade: toda tabela com `tenantId` e um cliente Prisma estendido que filtra por inquilino sozinho, para não depender de lembrar o filtro em cada consulta.',
+      'Confirmação e lembrete no WhatsApp por provedor abstrato — mock no desenvolvimento, Meta Cloud API em produção — com fila BullMQ agendando o disparo de 24 horas antes.',
+      'Orçamento vira PDF e link público com token: o paciente aprova pelo celular e a clínica vê a conversão em tempo real.',
+      'CPF e telefone criptografados em repouso com AES-256-GCM, cifra e decifra centralizadas no pacote de banco, sem PII em log.',
+      'WCAG 2.1 AA verificado por axe-core dentro do Playwright na integração contínua, com `eslint-plugin-jsx-a11y` barrando regressão no código.',
+      'Monorepo Turborepo com quatro pacotes compartilhados (banco, WhatsApp, PDF e interface) para que app web e gateway de WhatsApp não dupliquem regra.',
+    ],
+    stack: ['Next.js 15', 'TypeScript', 'Turborepo', 'Prisma', 'PostgreSQL', 'Clerk', 'BullMQ', 'Redis'],
+    results: [
+      { value: '11', label: 'módulos, da agenda ao financeiro' },
+      { value: 'AES-256-GCM', label: 'CPF e telefone criptografados em repouso' },
+      { value: 'WCAG 2.1 AA', label: 'verificado por axe-core na integração contínua' },
+      { value: '4', label: 'pacotes compartilhados no monorepo' },
+    ],
+  },
+  {
+    slug: 'marmitapro',
+    client: 'MarmitaPRO',
+    title: 'A aula de precificação abre ao lado da calculadora de precificação',
+    category: 'Aplicativos',
+    segment: 'Produto próprio · micronegócio de alimentação',
+    year: 2026,
+    headlineResult: 'Curso e ferramenta na mesma tela',
+    summary:
+      'App que ensina a montar um negócio de marmita fit e opera o negócio junto: trilha de 27 aulas, calculadora de macros com 67 ingredientes brasileiros e precificação com a conta aberta.',
+    size: 'default',
+    device: 'dashboard',
+    image: '/images/projects/marmitapro.webp',
+    liveUrl: 'https://marmitapro-alpha.vercel.app',
+    duration: 'Em evolução',
+    challenge: [
+      'Quem vende marmita fit copia o preço do vizinho. Se o custo dele é outro, o lucro vira prejuízo sem ninguém perceber.',
+      'A hora de trabalho — comprar, cozinhar, montar, higienizar, entregar — fica fora da planilha e sai do bolso todo mês.',
+      'O cliente pergunta os macros e o vendedor chuta. Quem tem ficha nutricional ganha a venda mesmo cozinhando pior.',
+      'O curso comprado vira PDF parado: a aula ensina a teoria e some, quando o que falta é a ferramenta aberta na hora de montar o cardápio.',
+      'O público tem de 25 a 45 anos e pouco ou nenhum conhecimento de nutrição, precificação e gestão. A interface não podia pressupor nenhum dos três.',
+    ],
+    solution: [
+      'Conteúdo e ferramenta no mesmo lugar: a aula sobre precificação abre ao lado da calculadora, a aula sobre cardápio abre ao lado do banco de receitas.',
+      'Calculadora de precificação com a conta aberta — ingredientes, embalagem, gás e energia, mão de obra — e cenários salvos para comparar margem.',
+      'Calculadora de macros sobre 67 ingredientes brasileiros, com totais do preparo e valores por porção.',
+      'Banco de receitas com ficha completa: ingredientes, modo de preparo, ficha nutricional e custo por porção, com busca e filtro por objetivo.',
+      'Quiz de onboarding em quatro passos que define para onde o usuário vai depois do cadastro, em vez de largá-lo num painel vazio.',
+      'PWA instalável com service worker e tela offline, porque quem cozinha usa o celular com a mão ocupada e a internet da cozinha.',
+      'RLS ativa em todas as tabelas do Supabase e Zod validando toda Server Action, cliente e servidor, com o mesmo esquema.',
+    ],
+    stack: ['Next.js 15', 'React 19', 'TypeScript', 'Tailwind v4', 'Supabase', 'Clerk', 'Zod', 'PWA'],
+    results: [
+      { value: '27', label: 'aulas em 5 módulos, com progresso por aula' },
+      { value: '67', label: 'ingredientes brasileiros na calculadora de macros' },
+      { value: 'PWA', label: 'instalável, com service worker e tela offline' },
+      { value: 'RLS', label: 'ativa em todas as tabelas do banco' },
+    ],
+  },
+  {
+    slug: 'dra-michele-herreira',
+    client: 'Dra. Michele Herreira',
+    title: 'Carga imediata como promessa central, não como item de uma lista de serviços',
+    category: 'Sites',
+    segment: 'Odontologia · São Paulo, SP',
+    year: 2025,
+    headlineResult: '“Seu novo sorriso em até 12 horas”',
+    summary:
+      'Site de consultório odontológico construído em torno de uma especialidade — carga imediata — com caso real de transformação e agendamento direto pelo WhatsApp.',
     size: 'default',
     device: 'desktop',
-    duration: '5 semanas',
+    image: '/images/projects/dra-michele-herreira.webp',
+    liveUrl: 'https://www.dramicheleherreira.com',
+    duration: '4 semanas',
     challenge: [
-      'O portfólio vivia no Instagram — e sumia da busca de quem procurava por serviço na cidade.',
-      'As fotos de obra pesavam 8MB cada e travavam o site antigo.',
-      'Não havia página por projeto para o Google indexar.',
+      'A consultora é especialista em carga imediata — implante e dente fixo no mesmo dia —, mas a especialidade ficava perdida no meio de dez tratamentos listados lado a lado.',
+      'Paciente de implante não decide num clique: pesquisa, compara e quer ver resultado antes de marcar avaliação.',
+      'Odontopediatria e cirurgia avançada falam com públicos opostos — pai de criança pequena e adulto decidindo uma reabilitação — e precisavam conviver na mesma página.',
+      'O contato acontece no WhatsApp e no Instagram. O site precisava entregar a conversa para esses canais, não competir com eles.',
     ],
     solution: [
-      'Página dedicada por obra, com dados estruturados e texto escrito para busca local.',
-      'Pipeline de imagem em AVIF com placeholder progressivo: 8MB viraram 180KB sem perda visível.',
-      'Perfil do Google Empresas conectado ao site e alimentado por projeto novo.',
+      'Uma promessa só no topo — “Seu novo sorriso em até 12 horas” — sobre a foto do consultório real, com um único botão: agendar avaliação.',
+      'Três pilares logo abaixo (carga imediata, cirurgia e implantes, odontopediatria) para que cada público se reconheça antes de rolar a página.',
+      'Bloco de resultado real de carga imediata feito na própria clínica, em vez de banco de imagens.',
+      'Os dez tratamentos aparecem depois da narrativa, já como catálogo de consulta — não como a primeira coisa que o paciente vê.',
+      'Poppins auto-hospedada em vez de requisição a fonte externa, e cada bloco revelado por IntersectionObserver sem biblioteca de animação.',
     ],
-    stack: ['Next.js', 'MDX', 'Cloudflare', 'Schema.org'],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'Poppins auto-hospedada', 'Vercel'],
     results: [
-      { value: '1º', label: 'no Google para a busca principal' },
-      { value: '+310%', label: 'tráfego orgânico em 4 meses' },
-      { value: '96', label: 'de performance no Lighthouse' },
+      { value: '1', label: 'promessa no topo, no lugar de uma lista de dez' },
+      { value: '10', label: 'tratamentos catalogados abaixo da narrativa' },
+      { value: '0', label: 'fotos de banco de imagens — consultório e casos reais' },
+      { value: 'WhatsApp', label: 'canal único de conversão, do topo ao rodapé' },
     ],
-    testimonial: {
-      quote:
-        'Passei a receber contato de quem já viu a obra inteira. A conversa começa muito mais adiantada.',
-      author: 'Helena Prado',
-      role: 'Arquiteta e fundadora, Studio Lumen',
-    },
-  },
-  {
-    slug: 'agrosul-distribuidora',
-    client: 'AgroSul Distribuidora',
-    title: 'IA que responde pedido no WhatsApp em 40 segundos',
-    category: 'Automação e IA',
-    segment: 'Distribuição · B2B',
-    year: 2025,
-    headlineResult: 'Resposta em 40s, antes eram 4 minutos',
-    summary:
-      'Assistente que entende o pedido em texto ou áudio, consulta preço e estoque e devolve orçamento formatado.',
-    size: 'default',
-    device: 'mobile',
-    duration: '8 semanas',
-    challenge: [
-      'Três vendedores respondiam 400 mensagens por dia, cada uma exigindo consulta manual de preço.',
-      'Pedido enviado em áudio era transcrito na mão e frequentemente errava quantidade.',
-      'Fora do horário comercial, o pedido esperava até a manhã seguinte.',
-    ],
-    solution: [
-      'Assistente com IA lendo texto e áudio, conectado à tabela de preço e ao estoque em tempo real.',
-      'Orçamento devolvido formatado, com prazo de entrega e link de confirmação.',
-      'Escalonamento para vendedor humano em qualquer caso de exceção ou desconto.',
-    ],
-    stack: ['Node', 'OpenAI', 'WhatsApp API', 'PostgreSQL', 'Redis'],
-    results: [
-      { value: '40s', label: 'tempo médio de resposta' },
-      { value: '+28%', label: 'pedidos fechados fora do horário' },
-      { value: '0', label: 'contratações extras no comercial' },
-    ],
-    testimonial: {
-      quote:
-        'O robô não substituiu vendedor. Tirou dele a parte chata e deixou o time negociando o que importa.',
-      author: 'Vinícius Krauss',
-      role: 'Gerente comercial, AgroSul',
-    },
   },
 ];
 

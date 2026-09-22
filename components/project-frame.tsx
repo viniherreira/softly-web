@@ -3,21 +3,34 @@ import type { Project } from '@/content/projects';
 import { cn } from '@/lib/utils';
 
 /**
- * Mockup vetorial usado enquanto não há captura real do projeto.
+ * Renderiza a imagem do projeto quando ela existe e, quando não existe, um
+ * mockup vetorial de reserva.
  *
- * Por que vetor e não imagem: mantém a proporção exata, pesa ~1KB, não gera
- * CLS e já vem no duotone azul da marca. Quando a captura real existir,
- * preencha `image` em content/projects.ts (1600×1000, AVIF/WebP) — o
- * componente troca sozinho para <Image> otimizado.
+ * Hoje os cinco projetos do portfólio têm imagem em /public/images/projects,
+ * então o caminho vetorial só entra se um projeto novo for adicionado sem
+ * captura. Ele fica porque é o que impede o card de quebrar nesse intervalo:
+ * mantém a proporção exata, pesa ~1KB, não gera CLS e já vem no duotone azul
+ * da marca.
  *
- * TODO: capturas reais dos 6 projetos em /public/images/projects.
+ * Para adicionar um projeto com imagem: exporte 1600×1000 em WebP ou AVIF e
+ * preencha `image` em content/projects.ts. O componente troca sozinho.
  */
 export function ProjectFrame({
   project,
   className,
+  /**
+   * Largura que a imagem vai ocupar de verdade. O padrão serve a um card de
+   * meia grade; quem renderiza mais largo que isso (o card de 12 colunas do
+   * portfólio, o herói do case) passa o seu — senão o navegador baixa um
+   * arquivo menor que o espaço e a captura chega borrada.
+   */
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 720px',
+  priority = false,
 }: {
   project: Pick<Project, 'device' | 'client' | 'image' | 'category'>;
   className?: string;
+  sizes?: string;
+  priority?: boolean;
 }) {
   const { device } = project;
 
@@ -35,9 +48,10 @@ export function ProjectFrame({
           src={project.image}
           alt={`Interface do projeto ${project.client} — ${project.category}`}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 720px"
+          sizes={sizes}
           className="object-cover"
           quality={82}
+          priority={priority}
         />
         <div className="noise-layer" />
       </div>

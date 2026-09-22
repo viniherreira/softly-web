@@ -334,7 +334,6 @@ grep -rn "TODO: substituir" content lib app components
 | `content/site.ts` | CNPJ, razão social, WhatsApp, e-mail, endereço, CEP, cidade/UF, ano de fundação, domínio, perfis sociais |
 | `content/pricing.ts` | todos os preços, valor de setup, faixa do "Sob medida", formas de pagamento |
 | `content/calculator.ts` | valores base, preço por página/tela, preço das integrações, multiplicadores |
-| `content/projects.ts` | os 6 projetos: cliente, números, depoimento, stack, duração |
 | `content/testimonials.ts` | depoimentos, nomes, cargos, empresas e a nota média do `AggregateRating` |
 | `content/stats.ts` | projetos entregues, anos, recorrência, prazo médio, satisfação, uptime |
 | `content/stack.ts` | lista real de clientes atendidos |
@@ -347,15 +346,17 @@ grep -rn "TODO: substituir" content lib app components
 
 | Asset | Onde entra | Especificação |
 | --- | --- | --- |
-| Capturas dos 6 projetos | `content/projects.ts` → campo `image` | 1600×1000, AVIF/WebP, em `/public/images/projects` |
+| Capturas reais de Benjamin, ClinicaIQ e MarmitaPRO | `public/images/projects/*.webp` | 1600×1000; hoje são prévias de interface remontadas — ver `content/projects.ts` |
+| Depoimentos dos 5 clientes | `content/projects.ts` → campo `testimonial` | frase autorizada, nome e cargo |
 | Logos de clientes | `content/stack.ts` → campo `logo` | SVG monocromático em `/public/images/logos` |
 | Fotos dos depoimentos | `content/testimonials.ts` → `avatar` | 400×400, AVIF |
 | Fotos do time | `sections/about.tsx` | 400×400, tratamento duotone (classe `.duotone` pronta) |
 | Depoimento em vídeo | `content/testimonials.ts` → `video` | MP4/WebM; o player customizado já existe e só aparece quando o campo é preenchido |
 | Ícones PNG do PWA | `app/manifest.ts` | opcional — hoje o manifest usa `icon.svg`, que já atende ao critério de instalação |
 
-Enquanto as imagens reais não chegam, os cards renderizam mockups vetoriais
-(`components/project-frame.tsx`): proporção correta, ~1KB, duotone azul e zero CLS.
+Os cinco projetos do portfólio já têm imagem em `/public/images/projects`. O
+mockup vetorial de `components/project-frame.tsx` continua no código como
+reserva: se um projeto novo entrar sem captura, o card não quebra.
 
 ### Limitações conhecidas
 
