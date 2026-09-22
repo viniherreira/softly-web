@@ -235,10 +235,9 @@ export const projects: Project[] = [
       'Navegação desenhada como jornada de decisão: Resultados, Tratamentos, Crianças, A doutora, Depoimentos, Contato — na ordem em que a dúvida aparece.',
       'Dois CTAs com pesos diferentes: "Agendar avaliação" abre o WhatsApp; "Ver casos clínicos" segura quem ainda está pesquisando, em vez de perder a visita.',
       'Tipografia serifada com itálico dourado no trecho-chave do título — registro visual de consultório de alto padrão, longe do azul clínico genérico do setor.',
+      'Página estática servida pela borda da Vercel: nada de consulta a banco para carregar o topo, que é onde o paciente decide se continua lendo.',
     ],
-    // TODO: confirmar a stack da versão atual com o cliente — a reformulação de
-    // 2026 não está em nenhum repositório acessível a esta sessão.
-    stack: ['Vercel'],
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'],
     results: [
       { value: '2', label: 'públicos atendidos na mesma página, sem diluir nenhum' },
       { value: 'CRO-SP', label: '71275 visível acima do título, como prova de credencial' },
