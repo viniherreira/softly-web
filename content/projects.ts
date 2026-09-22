@@ -14,7 +14,11 @@
  *
  * IMAGENS (/public/images/projects, 1600×1000, WebP)
  * - var-center-log.webp .......... captura real do site no ar
- * - dra-michele-herreira.webp .... captura real do site no ar
+ * - dra-michele-herreira.webp .... captura real da versão 2026, enviada pelo
+ *                                  cliente (o domínio é inalcançável daqui).
+ *                                  Veio 1649×817; escalada para 1600 de
+ *                                  largura e estendida na base com o próprio
+ *                                  fundo da página (#faf9f6) até 1600×1000.
  * - benjamin.webp ................ prévia de interface: o app é de acesso por
  * - clinica-iq.webp .............. convite / exige banco, então a tela foi
  * - marmitapro.webp .............. remontada com os tokens de design, a copy e
@@ -206,37 +210,39 @@ export const projects: Project[] = [
   {
     slug: 'dra-michele-herreira',
     client: 'Dra. Michele Herreira',
-    title: 'Carga imediata como promessa central, não como item de uma lista de serviços',
+    title: 'Dois públicos opostos — adulto reabilitando a boca e criança de 3 anos — na mesma página',
     category: 'Sites',
     segment: 'Odontologia · São Paulo, SP',
-    year: 2025,
-    headlineResult: '“Seu novo sorriso em até 12 horas”',
+    year: 2026,
+    headlineResult: '“Um sorriso saudável em cada idade”',
     summary:
-      'Site de consultório odontológico construído em torno de uma especialidade — carga imediata — com caso real de transformação e agendamento direto pelo WhatsApp.',
+      'Site de consultório odontológico com o registro profissional em evidência, casos clínicos reais e agendamento direto pelo WhatsApp — dividido entre reabilitação adulta e odontopediatria.',
     size: 'default',
     device: 'desktop',
     image: '/images/projects/dra-michele-herreira.webp',
     liveUrl: 'https://www.dramicheleherreira.com',
-    duration: '4 semanas',
+    duration: '5 semanas',
     challenge: [
-      'A consultora é especialista em carga imediata — implante e dente fixo no mesmo dia —, mas a especialidade ficava perdida no meio de dez tratamentos listados lado a lado.',
-      'Paciente de implante não decide num clique: pesquisa, compara e quer ver resultado antes de marcar avaliação.',
-      'Odontopediatria e cirurgia avançada falam com públicos opostos — pai de criança pequena e adulto decidindo uma reabilitação — e precisavam conviver na mesma página.',
-      'O contato acontece no WhatsApp e no Instagram. O site precisava entregar a conversa para esses canais, não competir com eles.',
+      'A dentista atende dois públicos que não se parecem em nada: o adulto decidindo implante e reabilitação oral, e o pai marcando a primeira consulta de uma criança de 3 anos. Um site só precisava falar com os dois sem diluir nenhum.',
+      'Implante é decisão cara e demorada. O paciente pesquisa, compara e quer ver resultado e credencial antes de mandar a primeira mensagem.',
+      'Odontologia tem regra de publicidade do CFO: nada de promessa de resultado, preço em destaque ou "antes e depois" sensacionalista. A página tinha que converter dentro desse limite.',
+      'Odontopediatria vive de confiança pessoal — quem marca quer ver o rosto de quem vai atender a criança, não um banco de imagens.',
     ],
     solution: [
-      'Uma promessa só no topo — “Seu novo sorriso em até 12 horas” — sobre a foto do consultório real, com um único botão: agendar avaliação.',
-      'Três pilares logo abaixo (carga imediata, cirurgia e implantes, odontopediatria) para que cada público se reconheça antes de rolar a página.',
-      'Bloco de resultado real de carga imediata feito na própria clínica, em vez de banco de imagens.',
-      'Os dez tratamentos aparecem depois da narrativa, já como catálogo de consulta — não como a primeira coisa que o paciente vê.',
-      'Poppins auto-hospedada em vez de requisição a fonte externa, e cada bloco revelado por IntersectionObserver sem biblioteca de animação.',
+      'Uma frase que cobre os dois públicos no topo — "Um sorriso saudável em cada idade" — e, logo abaixo dela, a divisão explícita: implantes e reabilitação para adultos, odontopediatria e prevenção para crianças.',
+      'CRO-SP 71275 impresso acima do título e repetido num selo sobre a foto: a credencial é o argumento de confiança que a regra publicitária permite, então ela vira elemento de design.',
+      'Foto real da dentista no próprio consultório, com cartões flutuantes destacando registro, satisfação e faixa etária atendida — zero banco de imagens.',
+      'Navegação desenhada como jornada de decisão: Resultados, Tratamentos, Crianças, A doutora, Depoimentos, Contato — na ordem em que a dúvida aparece.',
+      'Dois CTAs com pesos diferentes: "Agendar avaliação" abre o WhatsApp; "Ver casos clínicos" segura quem ainda está pesquisando, em vez de perder a visita.',
+      'Tipografia serifada com itálico dourado no trecho-chave do título — registro visual de consultório de alto padrão, longe do azul clínico genérico do setor.',
+      'Página estática servida pela borda da Vercel: nada de consulta a banco para carregar o topo, que é onde o paciente decide se continua lendo.',
     ],
-    stack: ['HTML5', 'CSS3', 'JavaScript', 'Poppins auto-hospedada', 'Vercel'],
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'],
     results: [
-      { value: '1', label: 'promessa no topo, no lugar de uma lista de dez' },
-      { value: '10', label: 'tratamentos catalogados abaixo da narrativa' },
-      { value: '0', label: 'fotos de banco de imagens — consultório e casos reais' },
-      { value: 'WhatsApp', label: 'canal único de conversão, do topo ao rodapé' },
+      { value: '2', label: 'públicos atendidos na mesma página, sem diluir nenhum' },
+      { value: 'CRO-SP', label: '71275 visível acima do título, como prova de credencial' },
+      { value: '7', label: 'seções na ordem em que a dúvida do paciente aparece' },
+      { value: 'WhatsApp', label: 'canal de agendamento, do topo ao rodapé' },
     ],
   },
 ];

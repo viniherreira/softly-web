@@ -11,6 +11,7 @@
  *  - calculator_lead      → "Receber proposta detalhada"
  *  - pricing_toggle       → troca mensal/anual
  *  - project_view         → abertura de um case study
+ *  - project_open_live    → clique no card do portfólio, que abre o site do projeto
  */
 export type ConsentState = {
   necessary: true;
@@ -73,6 +74,7 @@ export type AnalyticsEvent =
   | 'calculator_lead'
   | 'pricing_toggle'
   | 'project_view'
+  | 'project_open_live'
   | 'newsletter_submit';
 
 export function track(event: AnalyticsEvent, params: Record<string, unknown> = {}): void {
