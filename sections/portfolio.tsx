@@ -18,10 +18,39 @@ import { cn } from '@/lib/utils';
  * A troca usa `layout` do Framer Motion: os cards se reposicionam com FLIP
  * (transform puro), sem repintar a página.
  *
- * O padrão de larguras 7/5 · 5/7 · 6/6 é aplicado pelo índice, não pelo
- * projeto — assim a grade continua assimétrica e sem buraco em qualquer filtro.
+ * As larguras vêm da quantidade visível, não do projeto: contagem ímpar abre
+ * com um card de 12 colunas e o resto segue em pares 7/5 · 5/7. Assim a grade
+ * continua assimétrica e nenhuma linha fica pela metade em qualquer filtro —
+ * inclusive quando a categoria tem um projeto só.
  */
-const SPAN_CYCLE = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-7', 'lg:col-span-6', 'lg:col-span-6'];
+type Span = { className: string; sizes: string };
+
+/** Até 1024px a grade é de uma coluna só, então o trecho móvel é comum a todos. */
+const MOBILE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 94vw';
+
+const WIDE: Span = { className: 'lg:col-span-12', sizes: `${MOBILE_SIZES}, 1200px` };
+const PAIR_CYCLE: readonly Span[] = [
+  { className: 'lg:col-span-7', sizes: `${MOBILE_SIZES}, 720px` },
+  { className: 'lg:col-span-5', sizes: `${MOBILE_SIZES}, 520px` },
+  { className: 'lg:col-span-5', sizes: `${MOBILE_SIZES}, 520px` },
+  { className: 'lg:col-span-7', sizes: `${MOBILE_SIZES}, 720px` },
+];
+
+function spansFor(count: number): Span[] {
+  const spans: Span[] = [];
+  let index = 0;
+
+  if (count % 2 === 1) {
+    spans.push(WIDE);
+    index = 1;
+  }
+
+  for (let pair = 0; index < count; index += 1, pair += 1) {
+    spans.push(PAIR_CYCLE[pair % PAIR_CYCLE.length] ?? WIDE);
+  }
+
+  return spans;
+}
 
 export function Portfolio() {
   const [filter, setFilter] = useState<(typeof projectCategories)[number]>('Todos');
@@ -31,6 +60,8 @@ export function Portfolio() {
     [filter],
   );
 
+  const spans = useMemo(() => spansFor(visible.length), [visible.length]);
+
   return (
     <section id="portfolio" aria-labelledby="portfolio-titulo" className="section-y relative">
       <div className="shell">
@@ -38,8 +69,8 @@ export function Portfolio() {
           index="03"
           eyebrow="Portfólio"
           titleId="portfolio-titulo"
-          title="Projeto no ar, número que mudou."
-          description="Seis casos com o antes, o que foi construído e o resultado medido depois."
+          title="Projeto no ar, endereço para conferir."
+          description="Cinco casos com o problema que existia antes, o que foi construído e o link para abrir agora."
           action={
             <Button asChild variant="outline" trailing={<ArrowUpRight className="h-4 w-4" />}>
               <Link href="#contato">Quero um resultado assim</Link>
@@ -92,9 +123,9 @@ export function Portfolio() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: -12 }}
                 transition={{ duration: 0.5, ease: EASE_EXPO, delay: index * 0.04 }}
-                className={cn('min-w-0 sm:col-span-1', SPAN_CYCLE[index % SPAN_CYCLE.length])}
+                className={cn('min-w-0 sm:col-span-1', spans[index]?.className)}
               >
-                <ProjectCard project={project} />
+                <ProjectCard project={project} sizes={spans[index]?.sizes} />
               </motion.article>
             ))}
           </AnimatePresence>
@@ -104,7 +135,7 @@ export function Portfolio() {
   );
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project, sizes }: { project: Project; sizes?: string }) {
   return (
     <Link
       href={`/projetos/${project.slug}`}
@@ -114,7 +145,7 @@ function ProjectCard({ project }: { project: Project }) {
     >
       <div className="relative overflow-hidden rounded-[18px]">
         <div className="transition-transform duration-700 ease-expo group-hover:scale-[1.03]">
-          <ProjectFrame project={project} />
+          <ProjectFrame project={project} sizes={sizes} />
         </div>
 
         {/* Overlay de detalhes — só existe onde existe hover.

@@ -116,6 +116,25 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
                     {project.headlineResult}
                   </dd>
                 </div>
+                {project.liveUrl ? (
+                  <div className="col-span-2 border-t border-line/70 pt-5">
+                    <dt className="sr-only">Endereço do projeto</dt>
+                    <dd>
+                      {/* rel: link externo para site de cliente — sem noopener o
+                          site de destino ganha window.opener do nosso. */}
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-cursor="abrir no ar"
+                        className="group/live inline-flex items-center gap-2 rounded-pill font-mono text-body-sm text-title transition-colors duration-300 hover:text-brand-soft"
+                      >
+                        {project.liveUrl.replace(/^https?:\/\//, '')}
+                        <ArrowUpRight className="h-4 w-4 shrink-0 text-brand-soft transition-transform duration-300 ease-expo group-hover/live:-translate-y-0.5 group-hover/live:translate-x-0.5" />
+                      </a>
+                    </dd>
+                  </div>
+                ) : null}
               </dl>
             </Reveal>
           </div>
@@ -123,7 +142,12 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
           <Reveal delay={0.25} className="mt-14">
             <Parallax speed={0.06}>
               <div className="overflow-hidden rounded-bento border border-line/70 p-3">
-                <ProjectFrame project={project} />
+                {/* Herói do case: ocupa a largura da shell e é o LCP da página. */}
+                <ProjectFrame
+                  project={project}
+                  sizes="(max-width: 1024px) 94vw, 1200px"
+                  priority
+                />
               </div>
             </Parallax>
           </Reveal>
@@ -235,8 +259,10 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
 
       {/* Próximo projeto + CTA */}
       <section className="shell pb-24">
+        {/* min-w-0: item de grid tem min-width:auto por padrão, então o card
+            não encolhia abaixo do texto e vazava a tela em 320px. */}
         <div className="grid gap-5 lg:grid-cols-2">
-          <Reveal>
+          <Reveal className="min-w-0">
             <Link
               href={`/projetos/${next.slug}`}
               data-cursor="ver projeto"
@@ -254,7 +280,7 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
             </Link>
           </Reveal>
 
-          <Reveal delay={0.08}>
+          <Reveal delay={0.08} className="min-w-0">
             <div className="glass flex h-full flex-col justify-between rounded-bento p-8">
               <p className="font-mono text-label uppercase text-brand-soft">Seu projeto</p>
               <p className="mt-8 text-display-md text-title">
