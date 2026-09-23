@@ -148,7 +148,6 @@ export function Header() {
             animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)', transition: { duration: 0.55, ease: EASE_EXPO } }}
             exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)', transition: { duration: 0.4, ease: EASE_EXPO } }}
           >
-            <div className="dot-layer" />
             <nav
               aria-label="Navegação principal (mobile)"
               className="shell flex h-full flex-col justify-center gap-2 pb-[max(6rem,calc(env(safe-area-inset-bottom)+4rem))] pt-[var(--header-h)]"

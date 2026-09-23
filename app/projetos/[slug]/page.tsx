@@ -62,9 +62,8 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -left-[10%] -top-[30%] -z-10 h-[42rem] w-[42rem] animate-mesh-drift rounded-pill blur-[130px]"
-          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.34), transparent 62%)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.187), transparent 62%)' }}
         />
-        <div className="grid-layer -z-10" />
 
         <div className="shell">
           <Reveal>
@@ -213,7 +212,6 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
       <section aria-labelledby="resultados" className="relative isolate mt-10 overflow-hidden py-20">
         <div className="divider-glow absolute inset-x-0 top-0" />
         <div className="divider-glow absolute inset-x-0 bottom-0" />
-        <div className="dot-layer -z-10" />
 
         <div className="shell">
           <Reveal>

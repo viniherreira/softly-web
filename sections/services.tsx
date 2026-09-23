@@ -208,10 +208,9 @@ function ConversionChart() {
         aria-hidden="true"
         className="absolute inset-0 opacity-70 transition-opacity duration-700 ease-expo group-hover:opacity-100"
         style={{
-          background: 'radial-gradient(120% 100% at 20% 0%, rgb(var(--glow) / 0.26), transparent 60%)',
+          background: 'radial-gradient(120% 100% at 20% 0%, rgb(var(--glow) / 0.143), transparent 60%)',
         }}
       />
-      <div className="dot-layer" />
 
       <figcaption className="relative flex items-baseline justify-between gap-4">
         <span className="font-mono text-label uppercase text-muted">O funil que a gente mede</span>

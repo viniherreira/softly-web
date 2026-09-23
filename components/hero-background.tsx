@@ -51,14 +51,14 @@ export function HeroBackground({
       <div
         className="absolute -left-[18%] -top-[28%] h-[46rem] w-[46rem] animate-mesh-drift rounded-pill blur-[120px]"
         style={{
-          background: 'radial-gradient(circle, rgb(var(--glow) / 0.42), transparent 62%)',
+          background: 'radial-gradient(circle, rgb(var(--glow) / 0.302), transparent 62%)',
           animationDelay: '0s',
         }}
       />
       <div
         className="absolute -right-[14%] top-[6%] h-[38rem] w-[38rem] animate-mesh-drift rounded-pill blur-[130px]"
         style={{
-          background: 'radial-gradient(circle, rgb(var(--brand) / 0.34), transparent 65%)',
+          background: 'radial-gradient(circle, rgb(var(--brand) / 0.245), transparent 65%)',
           animationDelay: '-7s',
         }}
       />
@@ -68,7 +68,7 @@ export function HeroBackground({
           variant === 'hero' ? 'bottom-[-18%]' : 'bottom-[-30%]',
         )}
         style={{
-          background: 'radial-gradient(circle, rgb(var(--accent) / 0.16), transparent 68%)',
+          background: 'radial-gradient(circle, rgb(var(--accent) / 0.115), transparent 68%)',
           animationDelay: '-14s',
         }}
       />

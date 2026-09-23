@@ -36,9 +36,8 @@ export default function InsightsPage() {
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-[12%] -top-[26%] -z-10 h-[38rem] w-[38rem] animate-mesh-drift rounded-pill blur-[130px]"
-          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.3), transparent 62%)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.165), transparent 62%)' }}
         />
-        <div className="grid-layer -z-10" />
 
         <div className="shell">
           <Reveal>

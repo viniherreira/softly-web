@@ -26,10 +26,9 @@ export function Stats() {
         className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 h-[28rem] -translate-y-1/2"
         style={{
           background:
-            'radial-gradient(60% 100% at 50% 50%, rgb(var(--glow) / 0.14), transparent 70%)',
+            'radial-gradient(60% 100% at 50% 50%, rgb(var(--glow) / 0.077), transparent 70%)',
         }}
       />
-      <div className="dot-layer -z-10" />
 
       <div className="shell">
         <h2 id="numeros-titulo" className="sr-only">

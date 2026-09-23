@@ -24,7 +24,7 @@ export function Pricing() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[34rem] w-[34rem] -translate-x-1/2 rounded-pill blur-[130px]"
-        style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.16), transparent 65%)' }}
+        style={{ background: 'radial-gradient(circle, rgb(var(--glow) / 0.088), transparent 65%)' }}
       />
 
       <div className="shell">
