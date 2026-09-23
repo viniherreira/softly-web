@@ -2,7 +2,6 @@ import { about } from '@/content/about';
 import { faq } from '@/content/faq';
 import { plans } from '@/content/pricing';
 import { services } from '@/content/services';
-import { aggregateRating } from '@/content/testimonials';
 import { site } from '@/content/site';
 import { absoluteUrl } from '@/lib/seo';
 import type { Project } from '@/content/projects';
@@ -65,13 +64,6 @@ export const localBusinessSchema = () => ({
     },
   ],
   areaServed: { '@type': 'Country', name: 'Brasil' },
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: aggregateRating.value,
-    reviewCount: aggregateRating.count,
-    bestRating: 5,
-    worstRating: 1,
-  },
 });
 
 export const servicesSchema = () =>

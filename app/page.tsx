@@ -11,7 +11,6 @@ import { Process } from '@/sections/process';
 import { Services } from '@/sections/services';
 import { Signal } from '@/sections/signal';
 import { Stats } from '@/sections/stats';
-import { Testimonials } from '@/sections/testimonials';
 import {
   faqSchema,
   localBusinessSchema,
@@ -48,7 +47,6 @@ export default function HomePage() {
       <Process />
       <Portfolio />
       <Pricing />
-      <Testimonials />
       <Stats />
       <About />
       <Faq />
