@@ -1,6 +1,5 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowRight, Check, Minus } from '@/components/icons/ui-icons';
@@ -12,7 +11,6 @@ import { Switch } from '@/components/ui/switch';
 import { annualDiscountLabel, paymentNote, plans, type Plan } from '@/content/pricing';
 import { track } from '@/lib/analytics';
 import { formatCurrencyValue } from '@/lib/format';
-import { EASE_EXPO } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
 export function Pricing() {
@@ -64,17 +62,11 @@ export function Pricing() {
             >
               Anual
             </span>
-            <AnimatePresence>
-              {annual ? (
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8, x: -6 }}
-                  animate={{ opacity: 1, scale: 1, x: 0, transition: { duration: 0.4, ease: EASE_EXPO } }}
-                  exit={{ opacity: 0, scale: 0.8, x: -6, transition: { duration: 0.2 } }}
-                >
-                  <Badge variant="accent">{annualDiscountLabel}</Badge>
-                </motion.span>
-              ) : null}
-            </AnimatePresence>
+            {annual ? (
+              <span className="animate-enter-up">
+                <Badge variant="accent">{annualDiscountLabel}</Badge>
+              </span>
+            ) : null}
           </div>
         </Reveal>
 
@@ -151,17 +143,17 @@ function PlanCard({ plan, annual }: { plan: Plan; annual: boolean }) {
           ) : (
             <>
               <span className="font-mono text-lead text-muted">R$</span>
-              <AnimatePresence mode="popLayout" initial={false}>
-                <motion.span
-                  key={price}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE_EXPO } }}
-                  exit={{ opacity: 0, y: -12, transition: { duration: 0.15 } }}
-                  className="numeric font-display text-[clamp(2.25rem,8vw,3rem)] font-bold leading-none tracking-[-0.04em] text-title"
-                >
-                  {formatCurrencyValue(price)}
-                </motion.span>
-              </AnimatePresence>
+              {/* `key` no preço faz o número remontar na troca mensal/anual,
+                  então a animação CSS de entrada reinicia. Era
+                  `AnimatePresence mode="popLayout"`, que posiciona o elemento
+                  que sai fora do fluxo, mexendo no DOM por fora do React — o
+                  mesmo padrão que derrubava a navegação a partir da home. */}
+              <span
+                key={price}
+                className="numeric animate-enter-up font-display text-[clamp(2.25rem,8vw,3rem)] font-bold leading-none tracking-[-0.04em] text-title"
+              >
+                {formatCurrencyValue(price)}
+              </span>
               {plan.suffix ? (
                 <span className="font-mono text-body-sm text-muted">{plan.suffix}</span>
               ) : null}

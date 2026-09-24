@@ -1,6 +1,5 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { ArrowRight, ArrowUpRight } from '@/components/icons/ui-icons';
@@ -10,7 +9,6 @@ import { SectionHeading } from '@/components/section-heading';
 import { Button } from '@/components/ui/button';
 import { projectCategories, projects, type Project } from '@/content/projects';
 import { track } from '@/lib/analytics';
-import { EASE_EXPO } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
 /**
@@ -92,13 +90,19 @@ export function Portfolio() {
                     active ? 'border-transparent text-white' : 'border-line text-body hover:text-title',
                   )}
                 >
-                  {active ? (
-                    <motion.span
-                      layoutId="portfolio-filter"
-                      className="absolute inset-0 -z-10 rounded-pill bg-brand"
-                      transition={{ duration: 0.45, ease: EASE_EXPO }}
-                    />
-                  ) : null}
+                  {/* Antes era um `motion.span` com `layoutId`, que desliza
+                      entre os filtros. O deslize e bonito e custou caro: a
+                      projecao de layout do Framer mexe no DOM por fora do
+                      React e, ao desmontar a secao no meio da navegacao,
+                      derrubava a pagina de destino. Aqui a pilula e um span
+                      comum, um por botao, com transicao de opacidade. */}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'absolute inset-0 -z-10 rounded-pill bg-brand transition-opacity duration-300 ease-expo',
+                      active ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
                   {category}
                 </button>
               );
@@ -106,24 +110,34 @@ export function Portfolio() {
           </div>
         </Reveal>
 
-        {/* Grade */}
-        <motion.div layout className="mt-8 grid gap-5 lg:grid-cols-12">
-          <AnimatePresence mode="popLayout">
-            {visible.map((project, index) => (
-              <motion.article
-                key={project.slug}
-                layout
-                initial={{ opacity: 0, scale: 0.96, y: 24 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: -12 }}
-                transition={{ duration: 0.5, ease: EASE_EXPO, delay: index * 0.04 }}
-                className={cn('min-w-0 sm:col-span-1', spans[index]?.className)}
-              >
-                <ProjectCard project={project} sizes={spans[index]?.sizes} wide={spans[index]?.wide ?? false} />
-              </motion.article>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {/* Grade.
+            Era `AnimatePresence mode="popLayout"` com `layout` nos cards. Esse
+            modo tira o item que sai do fluxo e passa a posicionar tudo por
+            conta propria, fora do React — e e daqui que a pessoa clica para
+            navegar. Desmontar a secao com uma animacao em voo estourava
+            `removeChild` e a rota de destino abria como tela de erro.
+
+            Agora a grade e uma grade. A entrada de cada card e uma animacao
+            CSS; a `key` inclui o filtro para ela reiniciar quando a lista
+            muda, que era o unico efeito que o AnimatePresence dava aqui. */}
+        <div className="mt-8 grid gap-5 lg:grid-cols-12">
+          {visible.map((project, index) => (
+            <article
+              key={`${filter}-${project.slug}`}
+              className={cn(
+                'min-w-0 animate-enter-card sm:col-span-1',
+                spans[index]?.className,
+              )}
+              style={{ animationDelay: `${Math.min(index, 6) * 55}ms` }}
+            >
+              <ProjectCard
+                project={project}
+                sizes={spans[index]?.sizes}
+                wide={spans[index]?.wide ?? false}
+              />
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

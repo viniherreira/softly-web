@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ArrowRight, Check, Whatsapp } from '@/components/icons/ui-icons';
@@ -11,7 +10,6 @@ import { Field, Honeypot } from '@/components/ui/field';
 import { site, whatsappUrl } from '@/content/site';
 import { track } from '@/lib/analytics';
 import { formatCurrency } from '@/lib/format';
-import { EASE_EXPO } from '@/lib/motion';
 import { contactSchema, type ContactInput } from '@/lib/validators';
 import { cn } from '@/lib/utils';
 
@@ -87,25 +85,25 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="relative">
-      <AnimatePresence mode="wait">
-        {status === 'success' ? (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_EXPO } }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-start gap-5"
-          >
+      {/* Sem `AnimatePresence mode="wait"`: esse modo mantém o ramo que sai
+          montado enquanto o novo entra e mexe no DOM por fora do React, que é
+          o padrão que derrubava a navegação a partir da home. A troca aqui é
+          de mão única (formulário → sucesso), então a entrada em CSS basta. */}
+      {status === 'success' ? (
+        <div className="animate-enter-up flex flex-col items-start gap-5">
             <span className="grid h-16 w-16 place-items-center rounded-pill border border-accent/40 bg-accent/12">
               <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" aria-hidden="true">
-                <motion.path
+                {/* Traço do "certo" desenhado por CSS: o comprimento do path
+                    é 24,3 unidades, então dasharray/dashoffset nesse valor
+                    cobrem a linha inteira. */}
+                <path
                   d="m4 12.5 5 5L20 6.5"
                   stroke="rgb(var(--accent))"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1, transition: { duration: 0.6, ease: EASE_EXPO, delay: 0.15 } }}
+                  pathLength={1}
+                  className="animate-draw-check"
                 />
               </svg>
             </span>
@@ -126,16 +124,9 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
                 Continuar no WhatsApp
               </a>
             </Button>
-          </motion.div>
-        ) : (
-          <motion.form
-            key="form"
-            onSubmit={onSubmit}
-            noValidate
-            initial={false}
-            exit={{ opacity: 0, y: -12, transition: { duration: 0.2 } }}
-            className="relative"
-          >
+        </div>
+      ) : (
+        <form onSubmit={onSubmit} noValidate className="relative">
             <Honeypot />
             <input type="hidden" {...register('website')} />
 
@@ -193,14 +184,8 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
             </fieldset>
 
             {/* Estimativa vinda da calculadora */}
-            <AnimatePresence>
-              {estimate ? (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE_EXPO } }}
-                  exit={{ opacity: 0 }}
-                  className="mt-6 flex items-start gap-3 rounded-card border border-accent/35 bg-accent/8 p-4"
-                >
+            {estimate ? (
+              <div className="animate-enter-up mt-6 flex items-start gap-3 rounded-card border border-accent/35 bg-accent/8 p-4">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
                   <p className="text-body-sm text-body">
                     <span className="font-bold text-title">
@@ -209,9 +194,8 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
                     <br />
                     {estimate.summary}
                   </p>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
+              </div>
+            ) : null}
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Button
@@ -230,9 +214,8 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
                 {serverError}
               </p>
             ) : null}
-          </motion.form>
-        )}
-      </AnimatePresence>
+          </form>
+      )}
     </div>
   );
 }
