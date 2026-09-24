@@ -1,34 +1,42 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
-import { EASE_EXPO } from '@/lib/motion';
 
-/** Transição entre rotas: fade + deslize sutil, sempre abaixo de 400ms. */
+/**
+ * Entrada de rota — CSS puro, sem Framer Motion.
+ *
+ * Histórico, porque é um erro fácil de reintroduzir:
+ *
+ * 1. Começou com `AnimatePresence mode="wait"` e animação de saída. No App
+ *    Router isso quebra: quando a rota muda, `children` já é o conteúdo da
+ *    rota NOVA enquanto o `motion.div` antigo ainda está saindo. Os dois ramos
+ *    renderizam os mesmos nós, o React tenta remover um nó que não está mais
+ *    onde esperava e estoura
+ *    `NotFoundError: Failed to execute 'removeChild' on 'Node'`. Em produção
+ *    isso vira a tela "Application error: a client-side exception has
+ *    occurred" e a rota de destino não abre — só com F5, que renderiza no
+ *    servidor e não passa por aqui.
+ *
+ * 2. Tirar a saída resolveu esse caso, mas manteve um `motion.div` com `key` na
+ *    fronteira da rota. Framer Motion mexe no DOM por fora do React (projeção
+ *    de layout), e essa é justamente a combinação que produz o mesmo erro
+ *    quando uma animação está em voo no momento da navegação.
+ *
+ * Agora não há biblioteca de animação nenhuma neste ponto: um `<div>` comum
+ * com `key={pathname}`. O React monta e desmonta a subárvore sozinho e a
+ * entrada é uma animação CSS, que reinicia porque a `key` troca. Sem DOM
+ * manipulado por fora, o erro não tem por onde acontecer.
+ *
+ * `prefers-reduced-motion` já é respeitado no globals.css, que zera a duração
+ * de todas as animações.
+ */
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const reduced = usePrefersReducedMotion();
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={pathname}
-        initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
-        animate={
-          reduced
-            ? { opacity: 1, transition: { duration: 0.15 } }
-            : { opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE_EXPO } }
-        }
-        exit={
-          reduced
-            ? { opacity: 0, transition: { duration: 0.15 } }
-            : { opacity: 0, y: -6, transition: { duration: 0.22, ease: EASE_EXPO } }
-        }
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <div key={pathname} className="animate-enter-up">
+      {children}
+    </div>
   );
 }

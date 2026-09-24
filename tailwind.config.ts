@@ -160,6 +160,26 @@ const config: Config = {
           '0%,100%': { transform: 'translate3d(0,0,0)' },
           '50%': { transform: 'translate3d(0,-10px,0)' },
         },
+        /* Entrada de rota e de card filtrado. São CSS puro de propósito: as
+           versões em Framer Motion (AnimatePresence, `layout`, `layoutId`)
+           manipulam o DOM por fora do React e, quando a seção era desmontada
+           no meio da navegação, o React estourava
+           `NotFoundError: Failed to execute 'removeChild'` e a página de
+           destino virava tela de erro. */
+        'enter-up': {
+          from: { opacity: '0', transform: 'translate3d(0,10px,0)' },
+          to: { opacity: '1', transform: 'translate3d(0,0,0)' },
+        },
+        /* Traço do "certo" da confirmação do formulário. `pathLength={1}`
+           normaliza o comprimento do path, então 1 -> 0 desenha a linha. */
+        'draw-check': {
+          from: { strokeDasharray: '1', strokeDashoffset: '1' },
+          to: { strokeDasharray: '1', strokeDashoffset: '0' },
+        },
+        'enter-card': {
+          from: { opacity: '0', transform: 'translate3d(0,16px,0) scale(0.97)' },
+          to: { opacity: '1', transform: 'translate3d(0,0,0) scale(1)' },
+        },
         // Única exceção consciente à regra "só transform/opacity": o accordion
         // precisa da altura real do conteúdo (Radix expõe a variável abaixo).
         // É uma subárvore pequena e isolada — não causa reflow perceptível.
@@ -180,6 +200,9 @@ const config: Config = {
         'border-spin': 'border-spin 5s linear infinite',
         float: 'float 7s cubic-bezier(0.65, 0, 0.35, 1) infinite',
         scan: 'scan 2.4s cubic-bezier(0.65, 0, 0.35, 1) 1 both',
+        'enter-up': 'enter-up 350ms cubic-bezier(0.16, 1, 0.3, 1) both',
+        'enter-card': 'enter-card 500ms cubic-bezier(0.16, 1, 0.3, 1) both',
+        'draw-check': 'draw-check 600ms cubic-bezier(0.16, 1, 0.3, 1) 150ms both',
         'accordion-down': 'accordion-down 380ms cubic-bezier(0.16, 1, 0.3, 1)',
         'accordion-up': 'accordion-up 300ms cubic-bezier(0.16, 1, 0.3, 1)',
       },
