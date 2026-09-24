@@ -26,6 +26,14 @@
  *   TODO: substituir as três prévias por captura da tela real (rodar o app,
  *   exportar 1600×1000 e sobrescrever o arquivo — nada mais muda).
  *
+ * GALERIA (campo `gallery`, mesma pasta e mesmas dimensões)
+ * As três do VAR Center Log são captura real de outras seções do site. As do
+ * Benjamin, ClinicaIQ e MarmitaPRO seguem a regra das prévias acima — telas
+ * remontadas com os tokens, a copy e os números reais de cada produto. As
+ * fotos das receitas do MarmitaPRO são as do próprio produto.
+ * A Dra. Michele ainda não tem galeria: daqui só se alcança a captura que o
+ * cliente enviou. TODO: pedir mais prints da versão 2026.
+ *
  * TODO: substituir por dado real — depoimentos. Nenhum dos clientes tem
  * citação autorizada ainda; preferimos não publicar frase atribuída a pessoa
  * real sem autorização. Ao conseguir, preencha `testimonial`.
@@ -45,6 +53,11 @@ export type Project = {
   /** 'featured' ocupa duas colunas no grid assimétrico. */
   size: 'featured' | 'default' | 'tall';
   image?: string;
+  /**
+   * Telas extras mostradas na página do case, abaixo do herói. Cada uma com
+   * legenda, porque imagem de interface sem contexto não conta nada.
+   */
+  gallery?: { src: string; alt: string; caption: string }[];
   /** Endereço público do projeto, quando existe. */
   liveUrl?: string;
   device: 'desktop' | 'mobile' | 'dashboard';
@@ -70,6 +83,26 @@ export const projects: Project[] = [
     size: 'featured',
     device: 'desktop',
     image: '/images/projects/var-center-log.webp',
+    gallery: [
+      {
+        src: '/images/projects/var-historia.webp',
+        alt: 'Seção de história do site do VAR Center Log, com foto aérea do complexo',
+        caption:
+          'A história entra como argumento comercial: de cerâmica desativada a polo logístico, com as 25 mil entregas diárias do Mercado Livre no selo sobre a foto aérea.',
+      },
+      {
+        src: '/images/projects/var-infraestrutura.webp',
+        alt: 'Grade com os dez itens de infraestrutura do condomínio',
+        caption:
+          'Dez itens de infraestrutura em grade de três colunas — docas, portaria blindada, balanças de 60 t, energia no mercado livre. O locatário confere a lista sem falar com ninguém.',
+      },
+      {
+        src: '/images/projects/var-galpoes.webp',
+        alt: 'Cards dos galpões disponíveis com ficha técnica e foto real',
+        caption:
+          'Ficha técnica por galpão com foto real: área útil, dimensões, pé-direito e docas, cada card com o próprio CTA para o WhatsApp da equipe comercial.',
+      },
+    ],
     liveUrl: 'https://www.varcenterlog.com',
     duration: 'Contínuo, por fase',
     challenge: [
@@ -106,6 +139,20 @@ export const projects: Project[] = [
     size: 'default',
     device: 'dashboard',
     image: '/images/projects/benjamin.webp',
+    gallery: [
+      {
+        src: '/images/projects/benjamin-torre.webp',
+        alt: 'Torre de controle do Benjamin com radar de dores e contas em risco',
+        caption:
+          'Torre de controle: o que aparece reunião a reunião vira visão agregada — radar de dores, contas em risco com valor, pipeline por unidade de negócio e coaching de talk ratio.',
+      },
+      {
+        src: '/images/projects/benjamin-validacao.webp',
+        alt: 'Tela de validação com a tabela de precisão, recall e F1 por campo',
+        caption:
+          'A tela de validação publica precisão, recall e F1 campo a campo — inclusive onde o motor erra. Medir a própria falibilidade é parte do produto, não um anexo.',
+      },
+    ],
     liveUrl: 'https://benjamin-rose.vercel.app',
     duration: '10 semanas',
     challenge: [
@@ -143,6 +190,20 @@ export const projects: Project[] = [
     size: 'default',
     device: 'dashboard',
     image: '/images/projects/clinica-iq.webp',
+    gallery: [
+      {
+        src: '/images/projects/clinica-iq-orcamento.webp',
+        alt: 'Tela de orçamento do ClinicaIQ com odontograma e link público',
+        caption:
+          'Orçamento com odontograma dente a dente, link público com token e histórico de cada abertura — a clínica sabe se o paciente leu antes de cobrar resposta.',
+      },
+      {
+        src: '/images/projects/clinica-iq-financeiro.webp',
+        alt: 'Dashboard financeiro do ClinicaIQ com recebimentos por mês',
+        caption:
+          'Financeiro ligado ao atendimento: todo lançamento aponta para o procedimento que o gerou, então o número do mês sempre tem de onde vir.',
+      },
+    ],
     liveUrl: 'https://clinica-iq-web.vercel.app',
     duration: 'Em desenvolvimento',
     challenge: [
@@ -181,6 +242,20 @@ export const projects: Project[] = [
     size: 'default',
     device: 'dashboard',
     image: '/images/projects/marmitapro.webp',
+    gallery: [
+      {
+        src: '/images/projects/marmitapro-macros.webp',
+        alt: 'Calculadora de macros do MarmitaPRO com a ficha nutricional do prato',
+        caption:
+          'Calculadora de macros sobre 67 ingredientes brasileiros, em porção caseira. A soma por ingrediente fecha com o total — e vira o rótulo que o cliente pede.',
+      },
+      {
+        src: '/images/projects/marmitapro-receitas.webp',
+        alt: 'Banco de receitas do MarmitaPRO com ficha completa de uma receita',
+        caption:
+          'Banco de receitas com filtro por objetivo. Cada ficha traz ingredientes, preparo, macros e o custo calculado na tabela de preço do próprio usuário.',
+      },
+    ],
     liveUrl: 'https://marmitapro-alpha.vercel.app',
     duration: 'Em evolução',
     challenge: [

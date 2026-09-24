@@ -342,7 +342,8 @@ grep -rn "TODO: substituir" content lib app components
 
 | Asset | Onde entra | Especificação |
 | --- | --- | --- |
-| Capturas reais de Benjamin, ClinicaIQ e MarmitaPRO | `public/images/projects/*.webp` | 1600×1000; hoje são prévias de interface remontadas — ver `content/projects.ts` |
+| Capturas reais de Benjamin, ClinicaIQ e MarmitaPRO | `public/images/projects/*.webp` | 1600×1000; hoje são prévias de interface remontadas — ver `content/projects.ts`. Vale para o herói e para a galeria |
+| Galeria da Dra. Michele | `content/projects.ts` → campo `gallery` | 2 ou 3 prints da versão 2026, 1600×1000; é o único projeto sem galeria |
 | Depoimento de cliente (opcional) | `content/projects.ts` → campo `testimonial` | frase autorizada, nome e cargo; aparece na página do case |
 | Logos de clientes | `sections/logo-marquee.tsx` | SVG monocromático; hoje a faixa mostra o nome dos projetos em texto |
 | Fotos do time | `sections/about.tsx` | 400×400, tratamento duotone (classe `.duotone` pronta) |
