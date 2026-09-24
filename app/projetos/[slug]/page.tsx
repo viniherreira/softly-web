@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight, ArrowUpRight, Check, Quote } from '@/components/icons/ui-icons';
@@ -207,6 +208,53 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
           </aside>
         </div>
       </div>
+
+      {/* Galeria de telas.
+          Cada imagem tem legenda porque captura de interface sem contexto não
+          conta nada: quem lê o case quer saber o que aquela tela resolve. */}
+      {project.gallery?.length ? (
+        <section aria-labelledby="telas" className="shell pb-6 pt-16">
+          <Reveal>
+            <h2 id="telas" className="text-display-lg text-title">
+              Por dentro
+            </h2>
+            <p className="mt-4 max-w-2xl text-body text-body">
+              {project.gallery.length} telas do projeto, com o que cada uma resolve.
+            </p>
+          </Reveal>
+
+          <div className="mt-12 space-y-14">
+            {project.gallery.map((shot, index) => (
+              <Reveal key={shot.src} delay={0.05}>
+                <figure>
+                  <div className="overflow-hidden rounded-bento border border-line/70 p-3">
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[18px] border border-line/70 bg-ink-800">
+                      <Image
+                        src={shot.src}
+                        alt={shot.alt}
+                        fill
+                        sizes="(max-width: 1024px) 94vw, 1200px"
+                        className="object-cover"
+                        quality={82}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                      />
+                    </div>
+                  </div>
+                  <figcaption className="mt-5 flex gap-4">
+                    <span
+                      aria-hidden="true"
+                      className="mt-1 font-mono text-label text-brand-soft"
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className="max-w-2xl text-body text-body">{shot.caption}</span>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* Resultados */}
       <section aria-labelledby="resultados" className="relative isolate mt-10 overflow-hidden py-20">
